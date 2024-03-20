@@ -1,0 +1,394 @@
+##
+## Development of predictive Moran's eigenvector maps (pMEM)
+## Eigenfunction profile script
+## 
+## rm(list=ls())
+
+library(magrittr)
+library(pMEM)
+
+source("../pMEM-aux.R")
+
+## Distance-weighting functions figure
+if(FALSE) {
+  
+  ## X11(width=4, height=12)
+  png(file="../../Image/Common weighting functions.png", width = 400, height = 1200)
+  par(mfrow=c(7,1),mar=c(5.1,5.1,0.6,0.6))
+  
+  d <- seq(0,5,0.001)
+  
+  plot(x = d, y = genDWF("linear",1)(d), type = "l", ylim = c(0,1), las = 1L,
+       xlab = "", ylab = "", cex.axis = 2, lwd = 2)
+  lines(x = d, y = genDWF("linear",2)(d), col = "red", lwd = 2)
+  lines(x = d, y = genDWF("linear",3)(d), col = "blue", lwd = 2)
+  text(x = 2, y = 0.9, label = "Linear", adj = 0,
+       cex = 2)
+  
+  plot(x = d, y = genDWF("power",1,1)(d), type = "l", ylim = c(0,1),
+       las = 1L, xlab = "", ylab = "", cex.axis = 2, lwd = 2)
+  lines(x = d, y = genDWF("power",2,0.5)(d), col = "red", lwd = 2)
+  lines(x = d, y = genDWF("power",3,0.5)(d), col = "blue", lwd = 2)
+  text(x = 2, y = 0.9, label = "Power", adj = 0,
+       cex = 2)
+  
+  plot(x = d, y = genDWF("hyperbolic",1,1)(d), type = "l", ylim = c(0,1),
+       las = 1L, xlab = "", ylab = "", cex.axis = 2, lwd = 2)
+  lines(x = d, y = genDWF("hyperbolic",2,0.5)(d), col = "red", lwd = 2)
+  lines(x = d, y = genDWF("hyperbolic",3,0.5)(d), col = "blue", lwd = 2)
+  text(x = 2, y = 0.9, cex = 2,
+       label = "Hyperbolic", adj=0)
+  
+  plot(x = d, y = genDWF("spherical",1)(d), type = "l", ylim = c(0,1), las = 1L, xlab = "",
+       ylab = "", cex.axis = 2, lwd = 2)
+  lines(x = d, y = genDWF("spherical",2)(d), col = "red", lwd = 2)
+  lines(x = d, y = genDWF("spherical",3)(d), col = "blue", lwd = 2)
+  text(x = 2, y = 0.9, label = "Spherical", adj = 0, cex = 2)
+  
+  plot(x = d, y = genDWF("exponential",1)(d), type = "l", ylim = c(0,1),
+       las = 1L, xlab = "", ylab = "", cex.axis = 2, lwd = 2)
+  lines(x = d, y = genDWF("exponential",0.5)(d), col = "red", lwd = 2)
+  lines(x = d, y = genDWF("exponential",2)(d), col = "blue", lwd = 2)
+  text(x = 2, y = 0.9, label = "Exponential", adj = 0, cex = 2)
+  
+  plot(x = d, y = genDWF("Gaussian",1)(d), type = "l", ylim = c(0,1),
+       las = 1L, xlab = "", ylab = "", cex.axis = 2, lwd = 2)
+  lines(x = d, y = genDWF("Gaussian",0.5)(d), col = "red", lwd = 2)
+  lines(x = d, y = genDWF("Gaussian",2)(d), col = "blue", lwd = 2)
+  text(x = 2, y = 0.9, label = "Gaussian", adj = 0, cex = 2)
+  
+  plot(x = d, y = genDWF("hole_effect",1)(d), type = "l", ylim = c(-0.2,1),
+       las = 1L, xlab = "", ylab = "", cex.axis = 2, lwd = 2)
+  lines(x = d, y = genDWF("hole_effect",0.5)(d), col = "red", lwd = 2)
+  lines(x = d, y = genDWF("hole_effect",2)(d), col = "blue", lwd = 2)
+  abline(h = 0, lty = 3L)
+  text(x = 2, y = 0.9, label = "Hole effect", adj = 0, cex = 2)
+  
+  dev.off()
+  
+  if(FALSE) {
+    par(mar=c(5.1,5.1,0.6,0.6))
+    d <- seq(0,5,0.001)
+    plot(x = d, y = genDWF("hyperbolic",1,1)(d), type = "l", ylim = c(0,1),
+         las = 1L, xlab = "", ylab = "", cex.axis = 2, lwd = 2)
+    lines(x = d, y = genDWF("hyperbolic",2,0.5)(d), col = "red", lwd = 2)
+    lines(x = d, y = genDWF("hyperbolic",0.5,2)(d), col = "blue", lwd = 2)
+    text(x = 2, y = 0.9, cex = 2,
+         label = "Hyperbolic", adj=0)
+    rm(d)
+  }
+  
+  rm(d)
+}
+
+## One-dimensional spatial eigenfunction profile
+if(FALSE) {
+  
+  n <- 11
+  
+  profile <- list()
+  
+  if(!require(parallel)) break
+  cl <- makeForkCluster(4L)
+  
+  ## i = "equidistant"
+  ## i = "random"
+  for(i in c("equidistant","random")) {
+    if(i == "equidistant") {
+      x <- (n - 1)*seq(0, 1, length.out=n)
+    } else if(i == "random") {
+      x <- round(c(0, cumsum(runif(n - 1L, 0.5, 1.5))),2)
+      x <- (n - 1)*x/max(x)
+    }
+    
+    ## x <- profile[[i]]$x
+    profile[[i]] <- list(x = x)
+    
+    ## j = "hyperbolic"
+    for(j in c("linear","power","hyperbolic","spherical","exponential",
+               "Gaussian","hole_effect")) {
+      switch(
+        j,
+        linear = draw(
+          x, genDistMetric(), genDWF(j, 5), 0.1, 0.001
+        ),
+        power = draw(
+          x, genDistMetric(), genDWF(j, 5, 0.5), 0.1, 0.001
+        ),
+        hyperbolic = draw(
+          x, genDistMetric(), genDWF(j, 5, 1), 0.1, 0.001
+        ),
+        spherical = draw(
+          x, genDistMetric(), genDWF(j, 5), 0.1, 0.001
+        ),
+        exponential = draw(
+          x, genDistMetric(), genDWF(j, 5), 0.1, 0.001
+        ),
+        Gaussian = draw(
+          x, genDistMetric(), genDWF(j, 5), 0.1, 0.001
+        ),
+        hole_effect = draw(
+          x, genDistMetric(), genDWF(j, 5), 0.1, 0.001
+        )
+      ) -> profile[[i]][[j]]$drw
+      getDerivatives(profile[[i]][[j]]$drw, cl) -> profile[[i]][[j]]$drv
+    }
+  }
+  
+  stopCluster(cl)
+  
+  rm(n,i,j,x,cl)
+  
+  save(profile, file="../../Data/profile.rda")
+  
+} else load(file="../../Data/profile.rda")
+
+## Code to display the spatial eigenfunctions four-by-four:
+if(FALSE) {
+  
+  if(dev.cur() > 1) dev.off()
+  
+  pts <- "equidistant"  ## pts <- "random"  ##
+  
+  fun <- "hyperbolic"
+  
+  n <- length(profile[[pts]][[fun]]$drw$sef$getLambda())
+  
+  for(i in 1L:n) {
+    m <- i + (0L:3L)
+    m[m>n] - n -> m[m>n]
+    plotDraw1D(drw=profile[[pts]][[fun]]$drw, m=m)
+  }
+  
+  rm(pts,fun,n,i,m)
+  
+}
+
+## Code to display each eigenfunction with its first three derivatives:
+if(FALSE) {
+  
+  if(dev.cur() > 1) dev.off()
+  
+  pts <- "equidistant"  ## pts <- "random"
+  
+  fun <- "hyperbolic"
+  
+  n <- length(profile[[pts]][[fun]]$drw$sef$getLambda())
+  
+  for(i in 1L:n)
+    plotDerivatives(
+      drw = profile[[pts]][[fun]]$drw,
+      drv = profile[[pts]][[fun]]$drv,
+      j=i
+    )
+  
+  rm(pts,fun,n,i)
+  
+}
+
+rm(profile)
+
+## Three-point one-dimensional spatial eigenfunction profiles
+if(FALSE) {
+  
+  profile3pts <- list()
+  
+  if(!require(parallel)) break
+  
+  cl <- makeForkCluster(4L)
+  
+  ## j="hyperbolic"
+  for(j in c("linear","power","hyperbolic","spherical","exponential",
+             "Gaussian","hole_effect")) {
+    list(
+      x = seq(0.04,0.96,0.02),
+      drw = list(),
+      drv = list()
+    ) -> profile3pts[[j]]
+    
+    ## i=1L
+    for(i in 1L:length(profile3pts[[j]]$x)) {
+      switch(
+        j,
+        linear = draw(
+          c(0,profile3pts[[j]]$x[i],1), genDistMetric(), genDWF(j, 1),
+          0.1, 0.001
+        ),
+        power = draw(
+          c(0,profile3pts[[j]]$x[i],1), genDistMetric(), genDWF(j, 1, 0.5),
+          0.1, 0.001
+        ),
+        hyperbolic = draw(
+          c(0,profile3pts[[j]]$x[i],1), genDistMetric(), genDWF(j, 1, 1),
+          0.1, 0.001
+        ),
+        spherical = draw(
+          c(0,profile3pts[[j]]$x[i],1), genDistMetric(), genDWF(j, 1),
+          0.1, 0.001
+        ),
+        exponential = draw(
+          c(0,profile3pts[[j]]$x[i],1), genDistMetric(), genDWF(j, 1),
+          0.1, 0.001
+        ),
+        Gaussian = draw(
+          c(0,profile3pts[[j]]$x[i],1), genDistMetric(), genDWF(j, 1),
+          0.1, 0.001
+        ),
+        hole_effect = draw(
+          c(0,profile3pts[[j]]$x[i],1), genDistMetric(), genDWF(j, 1),
+          0.1, 0.001
+        )
+      ) -> profile3pts[[j]]$drw[[i]]
+      getDerivatives(profile3pts[[j]]$drw[[i]], cl) -> profile3pts[[j]]$drv[[i]]
+    }
+  }
+  
+  stopCluster(cl)
+  
+  rm(cl,i,j)
+  
+  save(profile3pts, file="../../Data/profile3pts.rda")
+  
+} else load(file="../../Data/profile3pts.rda")
+
+## Three-point one-dimensional spatial eigenfunction profile plotting script:
+if(FALSE) {
+  
+  if(dev.cur() > 1) dev.off()
+  
+  fun <- "hyperbolic"
+  
+  n <- length(profile3pts[[fun]]$x)
+  
+  for(i in 1L:n) {
+    plotDerivatives3Pts(
+      drw = profile3pts[[fun]]$drw[[i]],
+      drv = profile3pts[[fun]]$drv[[i]]
+    )
+  }
+  
+  rm(fun,n,i)
+  
+}
+
+rm(profile3pts)
+
+## two-dimensional spatial eigenfunction profiles
+if(FALSE) {
+  
+  profile2D <- list()
+  
+  if(!require(parallel)) break
+  
+  cl <- makeForkCluster(2L)
+  
+  pids <- unlist(clusterCall(cl, Sys.getpid))  ## If one needs to kill them
+  
+  ## i="equidistant"
+  ## i="random"
+  for(i in c("equidistant","random")) {
+    cat(i,'\n')
+    if(i == "equidistant") {
+      cbind(
+        x = c(-0.5,0.5,-1,0,1,-0.5,0.5),
+        y = c(rep(sqrt(3)/2,2L),rep(0,3L),rep(-sqrt(3)/2,2L))
+      ) -> coords
+    } else if(i == "random") {
+      cbind(
+        x = runif(7,-0.5,0.5),
+        y = runif(7,-sqrt(3)/2,sqrt(3)/2)
+      ) -> coords
+      rerange(coords[,1L],-1,1) -> coords[,1L]
+      rerange(coords[,2L],-sqrt(3)/2,sqrt(3)/2) -> coords[,2L]
+    }
+    
+    profile2D[[i]] <- list(coords = coords)
+    ## coords <- profile2D[[i]]$coords
+    
+    ## j="hyperbolic"
+    for(j in c("linear","power","hyperbolic","spherical","exponential",
+               "Gaussian","hole_effect")) {
+      cat(j,"- ")
+      switch(
+        j,
+        linear = draw2D(
+          x=coords, m=genDistMetric(), f=genDWF(j,2), ext=0.25, by=0.01
+        ),
+        power = draw2D(
+          x=coords, m=genDistMetric(), f=genDWF(j,2,0.5), 0.25, 0.01
+        ),
+        hyperbolic = draw2D(
+          x=coords, m=genDistMetric(), f=genDWF(j,2,1), 0.25, 0.01
+        ),
+        spherical = draw2D(
+          x=coords, m=genDistMetric(), f=genDWF(j,2), 0.25, 0.01
+        ),
+        exponential = draw2D(
+          x=coords, m=genDistMetric(), f=genDWF(j,2), 0.25, 0.01
+        ),
+        Gaussian = draw2D(
+          x=coords, m=genDistMetric(), f=genDWF(j,2), 0.25, 0.01
+        ),
+        hole_effect = draw2D(
+          x=coords, m=genDistMetric(), f=genDWF(j,2), 0.25, 0.01
+        )
+      ) -> profile2D[[i]][[j]]$drw
+      getDerivatives2D(profile2D[[i]][[j]]$drw, cl) -> profile2D[[i]][[j]]$drv
+    }
+  }
+  
+  stopCluster(cl)
+  
+  rm(i,j,coords,cl)
+  
+  ## system(sprintf("kill -9 %s",paste(pids,collapse=" ")))
+  ## rm(pids)
+  
+  for(i in names(profile2D$equidistant))
+    sprintf("../../Data/profile2D-EQ-%s.rds",i) %>%
+    saveRDS(profile2D$equidistant[[i]], file=.)
+  
+  for(i in names(profile2D$random))
+    sprintf("../../Data/profile2D-RD-%s.rds",i) %>%
+    saveRDS(profile2D$random[[i]], file=.)
+    
+  rm(i)
+  
+} else {
+  
+  profile2D <- list(equidistant = list(), random = list())
+  
+  for(i in c("coords","linear","power","hyperbolic","spherical",
+             "exponential","Gaussian","hole_effect")) {
+    sprintf("../../Data/profile2D-EQ-%s.rds",i) %>%
+      readRDS -> profile2D$equidistant[[i]]
+    sprintf("../../Data/profile2D-RD-%s.rds",i) %>%
+      readRDS -> profile2D$random[[i]]
+  }
+  
+  rm(i)
+  
+}
+
+if(FALSE) {
+  
+  if(dev.cur() > 1) dev.off()
+  
+  pts <- "equidistant"
+  
+  fun <- "hyperbolic"
+  
+  n <- ncol(profile2D[[pts]][[fun]]$drw$scr)
+  
+  for(i in 1L:n)
+    plotDerivatives2D(
+      drw = profile2D[[pts]][[fun]]$drw,
+      drv = profile2D[[pts]][[fun]]$drv,
+      j = i
+    )
+  
+  rm(pts,fun,n,i)
+  
+}
+
+rm(profile2D)

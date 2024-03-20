@@ -1,0 +1,320 @@
+---
+headers:
+  -
+    label: tab1
+    header: >
+      This is table A-I 1
+captions:
+  - 
+    label: ed_eqd_linear
+    caption: >
+      Spatial eigenfunctions calculated using the linear distance-weighting
+      function described in Dray et al. (2006) on an 11-point transect of
+      equidistant points.
+  - 
+    label: ed_rnd_linear
+    caption: >
+      Spatial eigenfunctions calculated using the linear distance-weighting
+      function described in Dray et al. (2006) on an 11-point transect of
+      randomly drawn points.
+  - 
+    label: eda_eqd_linear
+    caption: >
+      Spatial eigenfunctions and their derivatives calculated using the linear
+      distance-weighting function described in Dray et al. (2006) on an 11-point
+      transect of equidistant locations.
+  - 
+    label: eda_rnd_linear
+    caption: >
+      Spatial eigenfunctions and their derivatives calculated using the linear
+      distance-weighting function described in Dray et al. (2006) on an 11-point
+      transect of random locations.
+  - 
+    label: "3pta_linear"
+    caption: >
+      Two spatial eigenfunctions, with their first three derivatives with
+      respect to the distance, calculated from the linear distance-weighting
+      function described in Dray et al. (2006) on a three-point transect.
+  - 
+    label: eda2D_eqd_linear
+    caption: >
+      Two-dimensional spatial eigenfunctions and their first three derivatives
+      with respect to space, calculated using the linear distance-weighting
+      function described in Dray et al. (2006) on a plot with equidistant
+      sampling locations.
+  - 
+    label: eda2D_rnd_linear
+    caption: >
+      Two-dimensional spatial eigenfunctions and their first three derivatives
+      with respect to space, calculated using the linear distance-weighting
+      function described in Dray et al. (2006) on a plot with random sampling
+      locations.
+  - 
+    label: ed_eqd_power
+    caption: >
+      Spatial eigenfunctions calculated using the power distance-weighting
+      function described in Dray et al. (2006) as 'concave up' on an 11-point
+      transect of equidistant points.
+  - 
+    label: ed_rnd_power
+    caption: >
+      Spatial eigenfunctions calculated using the power distance-weighting
+      function described in Dray et al. (2006) as 'concave up' on an 11-point
+      transect of randomly drawn points.
+  - 
+    label: eda_eqd_power
+    caption: >
+      Spatial eigenfunctions and their derivatives calculated using the power
+      distance-weighting function described in Dray et al. (2006) as
+      'concave up' on an 11-point transect of equidistant locations.
+  - 
+    label: eda_rnd_power
+    caption: >
+      Spatial eigenfunctions and their derivatives calculated using the power
+      distance-weighting function described in Dray et al. (2006) as
+      'concave up' on an 11-point transect of random locations.
+  - 
+    label: "3pta_power"
+    caption: >
+      Two spatial eigenfunctions, with their first three derivatives with
+      respect to the distance, calculated from the power distance-weighting
+      function described in Dray et al. (2006) as 'concave up' on a three-point
+      transect.
+  - 
+    label: eda2D_eqd_power
+    caption: >
+      Two-dimensional spatial eigenfunctions and their first three derivatives
+      with respect to space, calculated using the power distance-weighting
+      function described in Dray et al. (2006) as 'concave up' on a plot with
+      equidistant sampling locations.
+  - 
+    label: eda2D_rnd_power
+    caption: >
+      Two-dimensional spatial eigenfunctions and their first three derivatives
+      with respect to space, calculated using the power distance-weighting
+      function described in Dray et al. (2006) as 'concave up' on a plot with
+      random sampling locations.
+  - 
+    label: ed_eqd_hyperbolic
+    caption: >
+      Spatial eigenfunctions calculated using the hyperbolic distance-weighting
+      function described in Dray et al. (2006) as 'concave down' on an 11-point
+      transect of equidistant points.
+  - 
+    label: ed_rnd_hyperbolic
+    caption: >
+      Spatial eigenfunctions calculated using the hyperbolic distance-weighting
+      function described in Dray et al. (2006) as 'concave down' on an 11-point
+      transect of randomly drawn points.
+  - 
+    label: eda_eqd_hyperbolic
+    caption: >
+      Spatial eigenfunctions and their derivatives calculated using the
+      hyperbolic distance-weighting function described in Dray et al. (2006) as
+      'concave down' on an 11-point transect of equidistant locations.
+  - 
+    label: eda_rnd_hyperbolic
+    caption: >
+      Spatial eigenfunctions and their derivatives calculated using the
+      hyperbolic distance-weighting function described in Dray et al. (2006) as
+      'concave down' on an 11-point transect of random locations.
+  - 
+    label: "3pta_hyperbolic"
+    caption: >
+      Two spatial eigenfunctions, with their first three derivatives with
+      respect to the distance, calculated from the hyperbolic distance-weighting
+      function described in Dray et al. (2006) as 'concave down' on a
+      three-point transect.
+  - 
+    label: eda2D_eqd_hyperbolic
+    caption: >
+      Two-dimensional spatial eigenfunctions and their first three derivatives
+      with respect to space, calculated using the hyperbolic distance-weighting
+      function described in Dray et al. (2006) as 'concave down' on a plot with
+      equidistant sampling locations.
+  - 
+    label: eda2D_rnd_hyperbolic
+    caption: >
+      Two-dimensional spatial eigenfunctions and their first three derivatives
+      with respect to space, calculated using the hyperbolic distance-weighting
+      function described in Dray et al. (2006) as 'concave down' on a plot with
+      random sampling locations.
+  - 
+    label: ed_eqd_spherical
+    caption: >
+      Spatial eigenfunctions calculated using the distance-weighting function
+      inspired from the spherical variogram function on an 11-point transect of
+      equidistant points.
+  - 
+    label: ed_rnd_spherical
+    caption: >
+      Spatial eigenfunctions calculated using the distance-weighting function
+      inspired from the spherical variogram function on an 11-point transect of
+      randomly drawn points.
+  - 
+    label: eda_eqd_spherical
+    caption: >
+      Spatial eigenfunctions and their derivatives calculated using the
+      distance-weighting function inspired from the spherical variogram function
+      on an 11-point transect of equidistant locations.
+  - 
+    label: eda_rnd_spherical
+    caption: >
+      Spatial eigenfunctions and their derivatives calculated using the
+      distance-weighting function inspired from the spherical variogram function
+      on an 11-point transect of random locations.
+  - 
+    label: "3pta_spherical"
+    caption: >
+      Two spatial eigenfunctions, with their first three derivatives with
+      respect to the distance, calculated from the distance-weighting function
+      inspired from the spherical variogram function on a three-point transect.
+  - 
+    label: eda2D_eqd_spherical
+    caption: >
+      Two-dimensional spatial eigenfunctions and their first three derivatives
+      with respect to space, calculated using the distance-weighting function
+      inspired from the spherical variogram function on a plot with equidistant
+      sampling locations.
+  - 
+    label: eda2D_rnd_spherical
+    caption: >
+      Two-dimensional spatial eigenfunctions and their first three derivatives
+      with respect to space, calculated using the distance-weighting function
+      inspired from the spherical variogram function on a plot with random
+      sampling locations.
+  - 
+    label: ed_eqd_exponential
+    caption: >
+      Spatial eigenfunctions calculated using the distance-weighting function
+      inspired from the exponential variogram function on an 11-point transect
+      of equidistant points.
+  - 
+    label: ed_rnd_exponential
+    caption: >
+      Spatial eigenfunctions calculated using the distance-weighting function
+      inspired from the exponential variogram function on an 11-point transect
+      of randomly drawn points.
+  - 
+    label: eda_eqd_exponential
+    caption: >
+      Spatial eigenfunctions and their derivatives calculated using the
+      distance-weighting function inspired from the exponential variogram
+      function on an 11-point transect of equidistant locations.
+  - 
+    label: eda_rnd_exponential
+    caption: >
+      Spatial eigenfunctions and their derivatives calculated using the
+      distance-weighting function inspired from the exponential variogram
+      function on an 11-point transect of random locations.
+  - 
+    label: "3pta_exponential"
+    caption: >
+      Two spatial eigenfunctions, with their first three derivatives with
+      respect to the distance, calculated from the distance-weighting function
+      inspired from the exponential variogram function on a three-point
+      transect.
+  - 
+    label: eda2D_eqd_exponential
+    caption: >
+      Two-dimensional spatial eigenfunctions and their first three derivatives
+      with respect to space, calculated using the distance-weighting function
+      inspired from the exponential variogram function on a plot with
+      equidistant sampling locations.
+  - 
+    label: eda2D_rnd_exponential
+    caption: >
+      Two-dimensional spatial eigenfunctions and their first three derivatives
+      with respect to space, calculated using the distance-weighting function
+      inspired from the exponential variogram function on a plot with random
+      sampling locations.
+  - 
+    label: ed_eqd_Gaussian
+    caption: >
+      Spatial eigenfunctions calculated using the distance-weighting function
+      inspired from the Gaussian variogram function on an 11-point transect of
+      equidistant points.
+  - 
+    label: ed_rnd_Gaussian
+    caption: >
+      Spatial eigenfunctions calculated using the distance-weighting function
+      inspired from the Gaussian variogram function on an 11-point transect of
+      randomly drawn points.
+  - 
+    label: eda_eqd_Gaussian
+    caption: >
+      Spatial eigenfunctions and their derivatives calculated using the
+      distance-weighting function inspired from the Gaussian variogram function
+      on an 11-point transect of equidistant locations.
+  - 
+    label: eda_rnd_Gaussian
+    caption: >
+      Spatial eigenfunctions and their derivatives calculated using the
+      distance-weighting function inspired from the Gaussian variogram function
+      on an 11-point transect of random locations.
+  - 
+    label: "3pta_Gaussian"
+    caption: >
+      Two spatial eigenfunctions, with their first three derivatives with
+      respect to the distance, calculated from the distance-weighting function
+      inspired from the Gaussian variogram function on a three-point transect.
+  - 
+    label: eda2D_eqd_Gaussian
+    caption: >
+      Two-dimensional spatial eigenfunctions and their first three derivatives
+      with respect to space, calculated using the distance-weighting function
+      inspired from the Gaussian variogram function on a plot with equidistant
+      sampling locations.
+  - 
+    label: eda2D_rnd_Gaussian
+    caption: >
+      Two-dimensional spatial eigenfunctions and their first three derivatives
+      with respect to space, calculated using the distance-weighting function
+      inspired from the Gaussian variogram function on a plot with random
+      sampling locations.
+  - 
+    label: ed_eqd_hole_effect
+    caption: >
+      Spatial eigenfunctions calculated using the distance-weighting function
+      inspired from the hole effect variogram function on an 11-point transect
+      of equidistant points.
+  - 
+    label: ed_rnd_hole_effect
+    caption: >
+      Spatial eigenfunctions calculated using the distance-weighting function
+      inspired from the hole effect variogram function on an 11-point transect
+      of randomly drawn points.
+  - 
+    label: eda_eqd_hole_effect
+    caption: >
+      Spatial eigenfunctions and their derivatives calculated using the
+      distance-weighting function inspired from the hole effect variogram
+      function on an 11-point transect of equidistant locations.
+  - 
+    label: eda_rnd_hole_effect
+    caption: >
+      Spatial eigenfunctions and their derivatives calculated using the
+      distance-weighting function inspired from the hole effect variogram
+      function on an 11-point transect of random locations.
+  - 
+    label: "3pta_hole_effect"
+    caption: >
+      Two spatial eigenfunctions, with their first three derivatives with
+      respect to the distance, calculated from the distance-weighting function
+      inspired from the hole effect variogram function on a three-point
+      transect.
+  - 
+    label: eda2D_eqd_hole_effect
+    caption: >
+      Two-dimensional spatial eigenfunctions and their first three derivatives
+      with respect to space, calculated using the distance-weighting function
+      inspired from the hole effect variogram function on a plot with
+      equidistant sampling locations.
+  - 
+    label: eda2D_rnd_hole_effect
+    caption: >
+      Two-dimensional spatial eigenfunctions and their first three derivatives
+      with respect to space, calculated using the distance-weighting function
+      inspired from the hole effect variogram function on a plot with random
+      sampling locations.
+---

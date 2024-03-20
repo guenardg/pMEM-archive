@@ -1,0 +1,108 @@
+---
+headers:
+  - 
+    label: rngTab
+    header: >
+      Mean values and ranges (mean [min, max]) of the Oribatid mite species
+      counts observed, fitted by the spatially-explicit model at the sampling
+      points, and predicted by the model over the prediction grid.
+captions:
+  - 
+    label: DWFlinear
+    caption: >
+      Results of the spatially-explicit model predicting the distribution of
+      each of the $35$ species of oribatid mites in the peat mat area sampled by
+      Borcard and Legendre (1994) in June 1989. Species spatial distribution was
+      modelled using spatial eigenfunctions were based on the linear distance
+      weighting function. The model is a multivariate $L_1$-regularized
+      Poisson-family generalized linear model. Predictions are presented on the
+      maps as rainbow colors and observed values at the sampling locations are
+      presented with dots using the same rainbow color scale as for the model
+      predictions; the absent species are represented as an $\times$ symbol. The
+      likelihood-based coefficients of determination ($R^2$) are located in
+      parenthesis under the species labels.
+  - 
+    label: DWFpower
+    caption: >
+      Results of the spatially-explicit model predicting the distribution of
+      each of the $35$ species of oribatid mites in the peat mat area sampled by
+      Borcard and Legendre (1994) in June 1989. Species spatial distribution was
+      modelled using spatial eigenfunctions were based on the power distance
+      weighting function. The model is a multivariate $L_1$-regularized
+      Poisson-family generalized linear model. Predictions are presented on the
+      maps as rainbow colors and observed values at the sampling locations are
+      presented with dots using the same rainbow color scale as for the model
+      predictions; the absent species are represented as an $\times$ symbol. The
+      likelihood-based coefficients of determination ($R^2$) are located in
+      parenthesis under the species labels.
+  - 
+    label: DWFhyperbolic
+    caption: >
+      Results of the spatially-explicit model predicting the distribution of
+      each of the $35$ species of oribatid mites in the peat mat area sampled by
+      Borcard and Legendre (1994) in June 1989. Species spatial distribution was
+      modelled using spatial eigenfunctions were based on the hyperbolic
+      distance weighting function. The model is a multivariate $L_1$-regularized
+      Poisson-family generalized linear model. Predictions are presented on the
+      maps as rainbow colors and observed values at the sampling locations are
+      presented with dots using the same rainbow color scale as for the model
+      predictions; the absent species are represented as an $\times$ symbol. The
+      likelihood-based coefficients of determination ($R^2$) are located in
+      parenthesis under the species labels.
+  - 
+    label: DWFspherical
+    caption: >
+      Results of the spatially-explicit model predicting the distribution of
+      each of the $35$ species of oribatid mites in the peat mat area sampled by
+      Borcard and Legendre (1994) in June 1989. Species spatial distribution was
+      modelled using spatial eigenfunctions were based on the spherical
+      distance weighting function. The model is a multivariate $L_1$-regularized
+      Poisson-family generalized linear model. Predictions are presented on the
+      maps as rainbow colors and observed values at the sampling locations are
+      presented with dots using the same rainbow color scale as for the model
+      predictions; the absent species are represented as an $\times$ symbol. The
+      likelihood-based coefficients of determination ($R^2$) are located in
+      parenthesis under the species labels.
+  - 
+    label: DWFexponential
+    caption: >
+      Results of the spatially-explicit model predicting the distribution of
+      each of the $35$ species of oribatid mites in the peat mat area sampled by
+      Borcard and Legendre (1994) in June 1989. Species spatial distribution was
+      modelled using spatial eigenfunctions were based on the exponential
+      distance weighting function. The model is a multivariate $L_1$-regularized
+      Poisson-family generalized linear model. Predictions are presented on the
+      maps as rainbow colors and observed values at the sampling locations are
+      presented with dots using the same rainbow color scale as for the model
+      predictions; the absent species are represented as an $\times$ symbol. The
+      likelihood-based coefficients of determination ($R^2$) are located in
+      parenthesis under the species labels.
+  - 
+    label: DWFGaussian
+    caption: >
+      Results of the spatially-explicit model predicting the distribution of
+      each of the $35$ species of oribatid mites in the peat mat area sampled by
+      Borcard and Legendre (1994) in June 1989. Species spatial distribution was
+      modelled using spatial eigenfunctions were based on the Gaussian
+      distance weighting function. The model is a multivariate $L_1$-regularized
+      Poisson-family generalized linear model. Predictions are presented on the
+      maps as rainbow colors and observed values at the sampling locations are
+      presented with dots using the same rainbow color scale as for the model
+      predictions; the absent species are represented as an $\times$ symbol. The
+      likelihood-based coefficients of determination ($R^2$) are located in
+      parenthesis under the species labels.
+  - 
+    label: DWFhole_effect
+    caption: >
+      Results of the spatially-explicit model predicting the distribution of
+      each of the $35$ species of oribatid mites in the peat mat area sampled by
+      Borcard and Legendre (1994) in June 1989. Species spatial distribution was
+      modelled using spatial eigenfunctions were based on the hole effect
+      distance weighting function. The model is a multivariate $L_1$-regularized
+      Poisson-family generalized linear model. Predictions are presented on the
+      maps as rainbow colors and observed values at the sampling locations are
+      presented with dots using the same rainbow color scale as for the model
+      predictions; the absent species are represented as an $\times$ symbol. The
+      likelihood-based coefficients of determination ($R^2$) are located in
+      parenthesis under the species labels.
+---

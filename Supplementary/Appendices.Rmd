@@ -1,0 +1,1480 @@
+---
+title: >
+  Making Predictions Using Spatial Eigenvector Maps -- Supplementary Material
+author:
+  - Author 1
+  - Author 2
+date: "`r Sys.Date()`"
+header-includes:
+  - \usepackage{setspace}
+  - \doublespacing
+  - \usepackage{lineno}
+  - \linenumbers
+output:
+  html_document:
+    toc: yes
+    toc_depth: 3
+bibliography: ../pMEM.bib
+biblio-style: ../mee.bst
+editor_options:
+  markdown:
+    wrap: 80
+---
+
+```{r setup, include=FALSE}
+
+library(knitr)
+
+knitr::opts_chunk$set(echo = TRUE)
+
+source("../Analysis/pMEM-aux.R")
+
+load(file="../Data/profile.rda")
+load(file="../Data/profile3pts.rda")
+
+profile2D <- list(equidistant = list(), random = list())
+
+for(i in c("coords","linear","power","hyperbolic","spherical",
+           "exponential","Gaussian","hole_effect")) {
+  
+  readRDS(
+    sprintf("../Data/profile2D-EQ-%s.rds",i)
+  ) -> profile2D$equidistant[[i]]
+  
+  readRDS(
+    sprintf("../Data/profile2D-RD-%s.rds",i)
+  ) -> profile2D$random[[i]]
+  
+}
+
+rm(i)
+
+## To change the display:
+hook_output <- knitr::knit_hooks$get("output")
+knitr::knit_hooks$set(output = function(x, options) {
+  if (!is.null(n <- options$out.lines)) {
+    x <- xfun::split_lines(x)
+    if (length(x) > n) {
+      # truncate the output
+      x <- c(head(x, n), "....\n")
+    }
+    x <- paste(x, collapse = "\n")
+  }
+  hook_output(x, options)
+})
+
+## Custom counter:
+makeCounter <- function(prefix) {
+  log <- list(
+      labels = character(),
+      captions = character()
+    )
+  list(
+    register = function(label, caption) {
+      log$labels <<- c(log$labels, label)
+      log$captions <<- c(log$captions, caption)
+      invisible(NULL)
+    },
+    getNumber = function(label) {
+      which(log$labels == label)
+    },
+    getCaption = function(label) {
+      a <- which(log$labels == label)
+      cap <- log$captions[a]
+      cat(sprintf("%s %d. %s\n\n",prefix,a,cap))
+      invisible(NULL)
+    }
+  )
+}
+
+headCap1 <- yaml::yaml.load_file("Appendix_II.yml")
+
+## Custom table counter:
+tableCounter1 <- makeCounter("Table A-II")
+
+if(length(headCap1$headers))
+  for(i in 1L:length(headCap1$headers))
+    tableCounter1$register(
+      headCap1$headers[[i]]$label,
+      headCap1$headers[[i]]$header
+    )
+## tableCounter1$getNumber("tab1")
+## tableCounter1$getCaption("tab1")
+
+## Custom figure counter:
+figCounter1 <- makeCounter("Figure A-II")
+
+if(length(headCap1$captions))
+  for(i in 1L:length(headCap1$captions))
+    figCounter1$register(
+      headCap1$captions[[i]]$label,
+      headCap1$captions[[i]]$caption
+    )
+## figCounter1$getNumber("ed_eqd_linear")
+## figCounter1$getCaption("ed_eqd_linear")
+rm(i)
+
+headCap2 <- yaml::yaml.load_file("Appendix_III.yml")
+
+## Custom table counter:
+tableCounter2 <- makeCounter("Table A-III")
+
+if(length(headCap2$headers))
+  for(i in 1L:length(headCap2$headers))
+    tableCounter2$register(
+      headCap2$headers[[i]]$label,
+      headCap2$headers[[i]]$header
+    )
+## tableCounter2$getNumber("rngTab")
+## tableCounter2$getCaption("rngTab")
+
+## Custom figure counter:
+figCounter2 <- makeCounter("Figure A-III")
+
+if(length(headCap2$captions))
+  for(i in 1L:length(headCap2$captions))
+    figCounter2$register(
+      headCap2$captions[[i]]$label,
+      headCap2$captions[[i]]$caption
+    )
+## figCounter2$getNumber("DWFlinear")
+## figCounter2$getCaption("DWFlinear")
+rm(i)
+```
+
+# Appendix I. Methodological details
+
+## Assessing SEF smoothness using locally estimated polynomials
+
+We chose a polynomial as the basis function for this analysis because
+polynomials have two properties that make them effective at estimating
+smoothness. Firstly, polynomials allow one to locally approximate most
+continuous functions with reasonable accuracy, whilst employing a
+reasonably-sized base polynomial (e.g., order $3$ to $5$). Secondly, polynomials
+are easy to differentiate, as any polynomial of order $n$ can be differentiated
+up to the $n^\mathrm{th}$ derivative. Since we have the full control on the
+resolution at which SEF are rendered, we can use a fine-grain estimation
+($0.001$ arbitrary units of space) together with a larger window ($13$ samples
+wide) and a small (order $3$) basis polynomial.
+
+To streamline the calculations, we used a sampling window whose width
+corresponds to an odd number of samples and a polynomial with a central value of
+$0$ (i.e., $x_i \in [-0.006,-0.005,...,-0.001,0,0.001,...,0.005,0.006]$).
+Because an order $3$ polynomial was used, each location was qualified by four
+parameters ($b_0$ through $b_3$, with $b_0$ being the intercept, $b_1$ the
+coefficient associated with $x$, $b_2$ that associated with $x^2$, and $b_3$
+that associated with $x^3$). Therefore, the first derivative at the centre of
+the window was estimated as $b_1$, the second derivative as $2 b_2$, and the
+third derivative as $6 b_3$.
+
+## Algorithm to generate the spatially-structured random maps
+
+Simulation data (i.e., maps) were generated at each point of a $72 \times 72$
+staggered-row triangular grid following a randomly-seeded Wiener process (i.e.,
+Brownian motion) implemented as follows:
+
+1. Select five points randomly, to be used as seeds, and assign them values
+   drawn from a normal distribution with mean $5$ and standard deviation $3$
+
+2. Find the set of all points with no assigned values, but with neighbour(s)
+   having assigned value(s); select one point at random among them
+
+3. Assign to that point a value drawn from a random normal distribution with a
+   mean being the value of its neighbouring vertex if it has an assigned value
+  (or the mean value of its neighbouring vertices, if there are many with
+  assigned values) and standard deviation $0.5$
+
+4. Repeat from step 2 while there are vertices with unassigned values; stop when
+   none remains.
+
+This procedure generated maps with spatially-structured values, as values held
+by empty points come from neighbouring points with assigned values (with the
+exception of the seeds). 
+
+## Calculations on the simulation results
+
+For each of the $26\,250$ simulation trials, simple linear models involving SEV
+associated with positive Moran's $I$ were fitted using ordinary least squares
+(OLS) regression on the training data set. SEVs with negative eigenvalues were
+dismissed for the sake of simplicity, because positive eigenvalue SEVs tend to
+represent general patterns occurring throughout the entire modelled area rather
+than locally on portions of this area. The orthogonality of the columns of
+$\mathbf{U}$ implies that the squared standardized regression coefficient of any
+SEV against a response variable $\mathbf{y}$ corresponds to the proportion of
+variance of $\mathbf{y}$ uniquely explained by it. This mathematical property
+simplifies SEV selection in the OLS regression context. For SEV selection, we
+ordered the regression coefficients in decreasing order of their absolute values
+and kept the set coefficients with the largest values that minimized the mean
+squared error of the resulting model calculated on the testing data set, which
+is defined as:
+
+$$
+\label{eqA1}\tag{A1}
+MSE = \frac{\sum_{i=1}^n(y_i - \hat{y}_i)^2}{n},
+$$
+
+where $y_i$ are the values of the testing set and $\hat{y}_i$ are the
+predictions for these values computed by the model built using the training set.
+The smallest of the squared regression coefficients among the ones selected by
+the procedure described in the previous paragraph was taken as the threshold
+value for OLS regression coefficient selection; its standardized value was
+calculated. As a baseline for comparison, the mean standard deviation ($MSD$) is
+calculated as follows:
+
+$$
+\label{eqA2}\tag{A2}
+MSD = \frac{\sum_{i=1}^n(y_i - \bar{y})^2}{n},
+$$
+
+where $\bar{y}$ is the mean value of the testing set.
+
+Simulations data were stored in a PostgreSQL database hosted on a central server
+using the `R` package **RPostGreSQL** [@RPostgreSQL]. Data (map values subset
+indices, and simulation conditions) were accessed from that database and
+calculation results were written to that database. Calculations subsequent to
+map and subset generation were carried out using multiple parallel computer
+processes.
+
+Analysis of the simulation results was carried out using a quality of prediction
+metric obtained as follows:
+
+$$
+\label{eqA3}\tag{A3}
+Q = \log_{10}(MSD) - \log_{10}(MSE).
+$$
+
+Parameters $d_{max}$ and, when necessary, $\alpha$ were estimated using the
+directed evolution global search approach described in @Ardia2011DEoptim and
+implemented in **R** package **DEoptim**. The DEoptim global search procedure
+requires lower and upper boundaries for all parameters on which optimization is
+being carried out. We bounded $d_{max}$ between $1$ and $1000$ and $\alpha$
+between $0.25$ and $1.75$. Whereas $Q$ was used for statistical analyses, the
+prediction coefficient ($P^2$) was used to display the simulation results as it
+is more readily telling to the human mind than the $Q$. This coefficient was
+obtained as follows:
+
+$$
+\label{eqA4}\tag{A4}
+P^2 = 1 - \frac{MSE}{MSD}
+$$
+
+or, equivalently:
+
+$$
+\label{eqA5}\tag{A5}
+P^2 = 1 - 10^{-Q}.
+$$
+
+$P^2$ takes a maximum value of $1$ when their is no model error ($MSE = 0$) and
+the value $0$ when model predictions have a performance equal to taking the mean
+value of the testing set (i.e., $MSE = MSD$). It has no negative boundary, since
+there is no limit to model failure. $P^2$ was not used for statistical analyses
+because of the large negative values that appear in cases of extreme model
+failure tend to destabilize the variance and yield potentially spurious
+analyses. The logarithmic nature of the $Q$ makes it much less sensitive to that
+phenomenon.
+
+# Appendix II. Animated figures for the analysis of SEF shape and smoothness
+
+### Types of displays
+
+There are four types of displays in this document; all of which are presented as
+animated figures. Each of them is described below.
+
+#### One-dimensional spatial eigenfunction
+
+These displays feature spatial eigenfunctions generated for $11$-point transects
+that were either equidistant or separated by randomly drawn distances for each
+of the seven distance-weighting functions (DWF) studied in the present paper.
+For each figure, the points represent the values on the spatial eigenvectors,
+which correspond to the values of the spatial eigenfunctions at the sampling
+locations, whereas the lines surrounding and intersecting the points represent
+values of the spatial eigenfunctions at any locations along the transect.
+Parameter $d_{max}$ has been set to $5$ and parameter $\alpha$ to $0.5$ for the
+power DWF and $1$ for the hyperbolic DWF. It is noteworthy that varying the
+values of parameter $d_{max}$ and $\alpha$ would also change the resulting
+eigenfunctions in terms of its shape and derivatives. This display was generated
+for transects with equidistant and random sampling locations.
+
+### One dimensional differential analysis
+
+These displays feature spatial eigenfunctions and their first three derivatives
+with respect to the distance along the transect, generated for $11$-point
+transects that were either equidistant or separated by randomly drawn distances.
+Spatial eigenfunctions were generated using one of six distance-weighting
+functions that are studied in the present paper. The vertical dotted segments
+represent the sampling locations along the transect. The eigenfunctions are
+estimated for locations in steps of $0.001$ units between the value $-0.1$ to
+the value $10.1$. Derivatives were estimated using $3^\mathrm{rd}$ degree
+polynomial splines calculated on a $13$-point moving window. Parameter $d_{max}$
+has been set to two times the largest distance between neighbouring locations
+for all DWF, and parameter $\alpha$ to $0.5$ for the power DWF and $1$ for the
+hyperbolic DWF. This display was generated for transects with equidistant and
+random sampling locations.
+
+### One-dimensional three-point shape and differential analysis
+
+These displays feature pairs of spatial eigenfunctions, with their first three
+derivatives with respect to the distance, generated from a three-point transect
+with the middle point being placed at various distances from the extremes.
+Spatial eigenfunctions were generated using one of six distance-weighting
+functions that are studied in the present paper. These extremes are at locations
+$0$ and $1$ and the middle point is moved from location $0.05$ to location
+$0.95$ in increments of $0.05$. The vertical dotted segments represent the
+sampling locations along the transect. The eigenfunctions are estimated for
+locations in steps of $0.001$ units between the value $-0.1$ to the value $1.1$.
+Derivatives were estimated using $3^\mathrm{rd}$ degree polynomial splines
+calculated on a 13-point moving window. Parameter $d_{max}$ has been set to $1$
+for all DWF, and parameter $\alpha$ to $0.5$ for the power DWF and $1$ for the
+hyperbolic DWF.
+
+### Two-dimensional shape and differential analysis
+
+These displays feature spatial eigenfunctions and the magnitude of their first
+three derivatives with respect to the distance along the surface, generated for
+$7$-point surfaces where points were either equidistant or randomly drawn.
+Two-dimensional Spatial eigenfunctions were generated using one of six
+distance-weighting functions that are studied in the present paper. The vertical
+dotted segments represent the sampling locations along the transect. The
+eigenfunctions are estimated for locations in steps of $0.01$ units over a
+surface stretching $0.25$ beyond the limits of the range of the points.
+Derivatives were estimated using two-dimensional $3^\mathrm{rd}$ degree
+polynomial splines surface calculated on a $13 \times 13$-point moving window.
+Parameter $d_{max}$ has been set to the value $2$ for all DWF, and parameter
+$\alpha$ to $0.5$ for the power DWF and $1$ for the hyperbolic DWF. This display
+was generated for plots with equidistant and random sampling locations.
+
+## Linear DWF
+
+### One-dimensional SEF
+
+#### Equidistant transect
+
+```{r, echo=FALSE, fig.height=7.0, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+pts <- "equidistant"
+fun <- "linear"
+n <- length(profile[[pts]][[fun]]$drw$sef$getLambda())
+for(i in 1L:n) {
+  m <- i + (0L:3L)
+  m[m>n] - n -> m[m>n]
+  plotDraw1D(drw=profile[[pts]][[fun]]$drw, m=m)
+}
+rm(fun,n,i,m)
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("ed_eqd_linear")
+```
+
+--------------------------------------------------------------------------------
+
+#### Random transect
+
+```{r, echo=FALSE, fig.height=7.0, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+pts <- "random"
+fun <- "linear"
+n <- length(profile[[pts]][[fun]]$drw$sef$getLambda())
+for(i in 1L:n) {
+  m <- i + (0L:3L)
+  m[m>n] - n -> m[m>n]
+  plotDraw1D(drw=profile[[pts]][[fun]]$drw, m=m)
+}
+rm(fun,n,i,m)
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("ed_rnd_linear")
+```
+
+--------------------------------------------------------------------------------
+
+### One dimensional differential analysis
+
+#### Equidistant transect
+
+```{r, echo=FALSE, fig.height=7.0, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+pts <- "equidistant"
+fun <- "linear"
+n <- length(profile[[pts]][[fun]]$drw$sef$getLambda())
+for(i in 1L:n)
+  plotDerivatives(
+    drw = profile[[pts]][[fun]]$drw,
+    drv = profile[[pts]][[fun]]$drv,
+    j=i
+  )
+rm(pts,fun,n,i)
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("eda_eqd_linear")
+```
+
+--------------------------------------------------------------------------------
+
+#### Random transect
+
+```{r, echo=FALSE, fig.height=7.0, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+pts <- "random"
+fun <- "linear"
+n <- length(profile[[pts]][[fun]]$drw$sef$getLambda())
+for(i in 1L:n)
+  plotDerivatives(
+    drw = profile[[pts]][[fun]]$drw,
+    drv = profile[[pts]][[fun]]$drv,
+    j=i
+  )
+rm(pts,fun,n,i)
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("eda_rnd_linear")
+```
+
+--------------------------------------------------------------------------------
+
+### One-dimensional three-point shape and differential analysis
+
+```{r, echo=FALSE, fig.height=7.0, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+fun <- "linear"
+n <- length(profile3pts[[fun]]$x)
+for(i in 1L:n) {
+  plotDerivatives3Pts(
+    drw = profile3pts[[fun]]$drw[[i]],
+    drv = profile3pts[[fun]]$drv[[i]])
+}
+rm(fun,n,i)
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("3pta_linear")
+```
+
+--------------------------------------------------------------------------------
+
+### Two-dimensional shape and differential analysis
+
+#### Equidistant plot
+
+```{r, echo=FALSE, fig.height=8.2, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+pts <- "equidistant"
+fun <- "linear"
+n <- length(profile2D[[pts]][[fun]]$drw$sef$getLambda())
+for(i in 1L:n)
+  plotDerivatives2D(
+    drw = profile2D[[pts]][[fun]]$drw,
+    drv = profile2D[[pts]][[fun]]$drv,
+    j = i
+  )
+rm(pts,fun,n,i)
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("eda2D_eqd_linear")
+```
+
+--------------------------------------------------------------------------------
+
+#### Random plot
+
+```{r, echo=FALSE, fig.height=8.2, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+pts <- "random"
+fun <- "linear"
+n <- length(profile2D[[pts]][[fun]]$drw$sef$getLambda())
+for(i in 1L:n)
+  plotDerivatives2D(
+    drw = profile2D[[pts]][[fun]]$drw,
+    drv = profile2D[[pts]][[fun]]$drv,
+    j = i
+  )
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("eda2D_rnd_linear")
+```
+
+--------------------------------------------------------------------------------
+
+## Power DWF
+
+### One-dimensional SEF
+
+#### Equidistant transect
+
+```{r, echo=FALSE, fig.height=7.0, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+pts <- "equidistant"
+fun <- "power"
+n <- length(profile[[pts]][[fun]]$drw$sef$getLambda())
+for(i in 1L:n) {
+  m <- i + (0L:3L)
+  m[m>n] - n -> m[m>n]
+  plotDraw1D(drw=profile[[pts]][[fun]]$drw, m=m)
+}
+rm(fun,n,i,m)
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("ed_eqd_power")
+```
+
+--------------------------------------------------------------------------------
+
+#### Random transect
+
+```{r, echo=FALSE, fig.height=7.0, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+pts <- "random"
+fun <- "power"
+n <- length(profile[[pts]][[fun]]$drw$sef$getLambda())
+for(i in 1L:n) {
+  m <- i + (0L:3L)
+  m[m>n] - n -> m[m>n]
+  plotDraw1D(drw=profile[[pts]][[fun]]$drw, m=m)
+}
+rm(fun,n,i,m)
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("ed_rnd_power")
+```
+
+--------------------------------------------------------------------------------
+
+### One dimensional differential analysis
+
+#### Equidistant transect
+
+```{r, echo=FALSE, fig.height=7.0, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+pts <- "equidistant"
+fun <- "power"
+n <- length(profile[[pts]][[fun]]$drw$sef$getLambda())
+for(i in 1L:n)
+  plotDerivatives(
+    drw = profile[[pts]][[fun]]$drw,
+    drv = profile[[pts]][[fun]]$drv,
+    j=i
+  )
+rm(pts,fun,n,i)
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("eda_eqd_power")
+```
+
+--------------------------------------------------------------------------------
+
+#### Random transect
+
+```{r, echo=FALSE, fig.height=7.0, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+pts <- "random"
+fun <- "power"
+n <- length(profile[[pts]][[fun]]$drw$sef$getLambda())
+for(i in 1L:n)
+  plotDerivatives(
+    drw = profile[[pts]][[fun]]$drw,
+    drv = profile[[pts]][[fun]]$drv,
+    j=i
+  )
+rm(pts,fun,n,i)
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("eda_rnd_power")
+```
+
+--------------------------------------------------------------------------------
+
+### One-dimensional three-point shape and differential analysis
+
+```{r, echo=FALSE, fig.height=7.0, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+fun <- "power"
+n <- length(profile3pts[[fun]]$x)
+for(i in 1L:n) {
+  plotDerivatives3Pts(
+    drw = profile3pts[[fun]]$drw[[i]],
+    drv = profile3pts[[fun]]$drv[[i]])
+}
+rm(fun,n,i)
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("3pta_power")
+```
+
+--------------------------------------------------------------------------------
+
+### Two-dimensional shape and differential analysis
+
+#### Equidistant plot
+
+```{r, echo=FALSE, fig.height=8.2, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+pts <- "equidistant"
+fun <- "power"
+n <- length(profile2D[[pts]][[fun]]$drw$sef$getLambda())
+for(i in 1L:n)
+  plotDerivatives2D(
+    drw = profile2D[[pts]][[fun]]$drw,
+    drv = profile2D[[pts]][[fun]]$drv,
+    j = i
+  )
+rm(pts,fun,n,i)
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("eda2D_eqd_power")
+```
+
+--------------------------------------------------------------------------------
+
+#### Random plot
+
+```{r, echo=FALSE, fig.height=8.2, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+pts <- "random"
+fun <- "power"
+n <- length(profile2D[[pts]][[fun]]$drw$sef$getLambda())
+for(i in 1L:n)
+  plotDerivatives2D(
+    drw = profile2D[[pts]][[fun]]$drw,
+    drv = profile2D[[pts]][[fun]]$drv,
+    j = i
+  )
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("eda2D_rnd_power")
+```
+
+--------------------------------------------------------------------------------
+
+## Hyperbolic DWF
+
+### One-dimensional SEF
+
+#### Equidistant transect
+
+```{r, echo=FALSE, fig.height=7.0, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+pts <- "equidistant"
+fun <- "hyperbolic"
+n <- length(profile[[pts]][[fun]]$drw$sef$getLambda())
+for(i in 1L:n) {
+  m <- i + (0L:3L)
+  m[m>n] - n -> m[m>n]
+  plotDraw1D(drw=profile[[pts]][[fun]]$drw, m=m)
+}
+rm(fun,n,i,m)
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("ed_eqd_hyperbolic")
+```
+
+--------------------------------------------------------------------------------
+
+#### Random transect
+
+```{r, echo=FALSE, fig.height=7.0, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+pts <- "random"
+fun <- "hyperbolic"
+n <- length(profile[[pts]][[fun]]$drw$sef$getLambda())
+for(i in 1L:n) {
+  m <- i + (0L:3L)
+  m[m>n] - n -> m[m>n]
+  plotDraw1D(drw=profile[[pts]][[fun]]$drw, m=m)
+}
+rm(fun,n,i,m)
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("ed_rnd_hyperbolic")
+```
+
+--------------------------------------------------------------------------------
+
+### One dimensional differential analysis
+
+#### Equidistant transect
+
+```{r, echo=FALSE, fig.height=7.0, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+pts <- "equidistant"
+fun <- "hyperbolic"
+n <- length(profile[[pts]][[fun]]$drw$sef$getLambda())
+for(i in 1L:n)
+  plotDerivatives(
+    drw = profile[[pts]][[fun]]$drw,
+    drv = profile[[pts]][[fun]]$drv,
+    j=i
+  )
+rm(pts,fun,n,i)
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("eda_eqd_hyperbolic")
+```
+
+--------------------------------------------------------------------------------
+
+#### Random transect
+
+```{r, echo=FALSE, fig.height=7.0, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+pts <- "random"
+fun <- "hyperbolic"
+n <- length(profile[[pts]][[fun]]$drw$sef$getLambda())
+for(i in 1L:n)
+  plotDerivatives(
+    drw = profile[[pts]][[fun]]$drw,
+    drv = profile[[pts]][[fun]]$drv,
+    j=i
+  )
+rm(pts,fun,n,i)
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("eda_rnd_hyperbolic")
+```
+
+--------------------------------------------------------------------------------
+
+### One-dimensional three-point shape and differential analysis
+
+```{r, echo=FALSE, fig.height=7.0, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+fun <- "hyperbolic"
+n <- length(profile3pts[[fun]]$x)
+for(i in 1L:n) {
+  plotDerivatives3Pts(
+    drw = profile3pts[[fun]]$drw[[i]],
+    drv = profile3pts[[fun]]$drv[[i]])
+}
+rm(fun,n,i)
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("3pta_hyperbolic")
+```
+
+--------------------------------------------------------------------------------
+
+### Two-dimensional shape and differential analysis
+
+#### Equidistant plot
+
+```{r, echo=FALSE, fig.height=8.2, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+pts <- "equidistant"
+fun <- "hyperbolic"
+n <- length(profile2D[[pts]][[fun]]$drw$sef$getLambda())
+for(i in 1L:n)
+  plotDerivatives2D(
+    drw = profile2D[[pts]][[fun]]$drw,
+    drv = profile2D[[pts]][[fun]]$drv,
+    j = i
+  )
+rm(pts,fun,n,i)
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("eda2D_eqd_hyperbolic")
+```
+
+--------------------------------------------------------------------------------
+
+#### Random plot
+
+```{r, echo=FALSE, fig.height=8.2, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+pts <- "random"
+fun <- "hyperbolic"
+n <- length(profile2D[[pts]][[fun]]$drw$sef$getLambda())
+for(i in 1L:n)
+  plotDerivatives2D(
+    drw = profile2D[[pts]][[fun]]$drw,
+    drv = profile2D[[pts]][[fun]]$drv,
+    j = i
+  )
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("eda2D_rnd_hyperbolic")
+```
+
+--------------------------------------------------------------------------------
+
+## Spherical DWF
+
+### One-dimensional SEF
+
+#### Equidistant transect
+
+```{r, echo=FALSE, fig.height=7.0, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+pts <- "equidistant"
+fun <- "spherical"
+n <- length(profile[[pts]][[fun]]$drw$sef$getLambda())
+for(i in 1L:n) {
+  m <- i + (0L:3L)
+  m[m>n] - n -> m[m>n]
+  plotDraw1D(drw=profile[[pts]][[fun]]$drw, m=m)
+}
+rm(fun,n,i,m)
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("ed_eqd_spherical")
+```
+
+--------------------------------------------------------------------------------
+
+#### Random transect
+
+```{r, echo=FALSE, fig.height=7.0, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+pts <- "random"
+fun <- "spherical"
+n <- length(profile[[pts]][[fun]]$drw$sef$getLambda())
+for(i in 1L:n) {
+  m <- i + (0L:3L)
+  m[m>n] - n -> m[m>n]
+  plotDraw1D(drw=profile[[pts]][[fun]]$drw, m=m)
+}
+rm(fun,n,i,m)
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("ed_rnd_spherical")
+```
+
+--------------------------------------------------------------------------------
+
+### One dimensional differential analysis
+
+#### Equidistant transect
+
+```{r, echo=FALSE, fig.height=7.0, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+pts <- "equidistant"
+fun <- "spherical"
+n <- length(profile[[pts]][[fun]]$drw$sef$getLambda())
+for(i in 1L:n)
+  plotDerivatives(
+    drw = profile[[pts]][[fun]]$drw,
+    drv = profile[[pts]][[fun]]$drv,
+    j=i
+  )
+rm(pts,fun,n,i)
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("eda_eqd_spherical")
+```
+
+--------------------------------------------------------------------------------
+
+#### Random transect
+
+```{r, echo=FALSE, fig.height=7.0, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+pts <- "random"
+fun <- "spherical"
+n <- length(profile[[pts]][[fun]]$drw$sef$getLambda())
+for(i in 1L:n)
+  plotDerivatives(
+    drw = profile[[pts]][[fun]]$drw,
+    drv = profile[[pts]][[fun]]$drv,
+    j=i
+  )
+rm(pts,fun,n,i)
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("eda_rnd_spherical")
+```
+
+--------------------------------------------------------------------------------
+
+### One-dimensional three-point shape and differential analysis
+
+```{r, echo=FALSE, fig.height=7.0, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+fun <- "spherical"
+n <- length(profile3pts[[fun]]$x)
+for(i in 1L:n) {
+  plotDerivatives3Pts(
+    drw = profile3pts[[fun]]$drw[[i]],
+    drv = profile3pts[[fun]]$drv[[i]])
+}
+rm(fun,n,i)
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("3pta_spherical")
+```
+
+--------------------------------------------------------------------------------
+
+### Two-dimensional shape and differential analysis
+
+#### Equidistant plot
+
+```{r, echo=FALSE, fig.height=8.2, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+pts <- "equidistant"
+fun <- "spherical"
+n <- length(profile2D[[pts]][[fun]]$drw$sef$getLambda())
+for(i in 1L:n)
+  plotDerivatives2D(
+    drw = profile2D[[pts]][[fun]]$drw,
+    drv = profile2D[[pts]][[fun]]$drv,
+    j = i
+  )
+rm(pts,fun,n,i)
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("eda2D_eqd_spherical")
+```
+
+--------------------------------------------------------------------------------
+
+#### Random plot
+
+```{r, echo=FALSE, fig.height=8.2, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+pts <- "random"
+fun <- "spherical"
+n <- length(profile2D[[pts]][[fun]]$drw$sef$getLambda())
+for(i in 1L:n)
+  plotDerivatives2D(
+    drw = profile2D[[pts]][[fun]]$drw,
+    drv = profile2D[[pts]][[fun]]$drv,
+    j = i
+  )
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("eda2D_rnd_spherical")
+```
+
+--------------------------------------------------------------------------------
+
+## Exponential DWF
+
+### One-dimensional SEF
+
+#### Equidistant transect
+
+```{r, echo=FALSE, fig.height=7.0, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+pts <- "equidistant"
+fun <- "exponential"
+n <- length(profile[[pts]][[fun]]$drw$sef$getLambda())
+for(i in 1L:n) {
+  m <- i + (0L:3L)
+  m[m>n] - n -> m[m>n]
+  plotDraw1D(drw=profile[[pts]][[fun]]$drw, m=m)
+}
+rm(fun,n,i,m)
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("ed_eqd_exponential")
+```
+
+--------------------------------------------------------------------------------
+
+#### Random transect
+
+```{r, echo=FALSE, fig.height=7.0, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+pts <- "random"
+fun <- "exponential"
+n <- length(profile[[pts]][[fun]]$drw$sef$getLambda())
+for(i in 1L:n) {
+  m <- i + (0L:3L)
+  m[m>n] - n -> m[m>n]
+  plotDraw1D(drw=profile[[pts]][[fun]]$drw, m=m)
+}
+rm(fun,n,i,m)
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("ed_rnd_exponential")
+```
+
+--------------------------------------------------------------------------------
+
+### One dimensional differential analysis
+
+#### Equidistant transect
+
+```{r, echo=FALSE, fig.height=7.0, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+pts <- "equidistant"
+fun <- "exponential"
+n <- length(profile[[pts]][[fun]]$drw$sef$getLambda())
+for(i in 1L:n)
+  plotDerivatives(
+    drw = profile[[pts]][[fun]]$drw,
+    drv = profile[[pts]][[fun]]$drv,
+    j=i
+  )
+rm(pts,fun,n,i)
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("eda_eqd_exponential")
+```
+
+--------------------------------------------------------------------------------
+
+#### Random transect
+
+```{r, echo=FALSE, fig.height=7.0, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+pts <- "random"
+fun <- "exponential"
+n <- length(profile[[pts]][[fun]]$drw$sef$getLambda())
+for(i in 1L:n)
+  plotDerivatives(
+    drw = profile[[pts]][[fun]]$drw,
+    drv = profile[[pts]][[fun]]$drv,
+    j=i
+  )
+rm(pts,fun,n,i)
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("eda_rnd_exponential")
+```
+
+--------------------------------------------------------------------------------
+
+### One-dimensional three-point shape and differential analysis
+
+```{r, echo=FALSE, fig.height=7.0, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+fun <- "exponential"
+n <- length(profile3pts[[fun]]$x)
+for(i in 1L:n) {
+  plotDerivatives3Pts(
+    drw = profile3pts[[fun]]$drw[[i]],
+    drv = profile3pts[[fun]]$drv[[i]])
+}
+rm(fun,n,i)
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("3pta_exponential")
+```
+
+--------------------------------------------------------------------------------
+
+### Two-dimensional shape and differential analysis
+
+#### Equidistant plot
+
+```{r, echo=FALSE, fig.height=8.2, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+pts <- "equidistant"
+fun <- "exponential"
+n <- length(profile2D[[pts]][[fun]]$drw$sef$getLambda())
+for(i in 1L:n)
+  plotDerivatives2D(
+    drw = profile2D[[pts]][[fun]]$drw,
+    drv = profile2D[[pts]][[fun]]$drv,
+    j = i
+  )
+rm(pts,fun,n,i)
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("eda2D_eqd_exponential")
+```
+
+--------------------------------------------------------------------------------
+
+#### Random plot
+
+```{r, echo=FALSE, fig.height=8.2, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+pts <- "random"
+fun <- "exponential"
+n <- length(profile2D[[pts]][[fun]]$drw$sef$getLambda())
+for(i in 1L:n)
+  plotDerivatives2D(
+    drw = profile2D[[pts]][[fun]]$drw,
+    drv = profile2D[[pts]][[fun]]$drv,
+    j = i
+  )
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("eda2D_rnd_exponential")
+```
+
+--------------------------------------------------------------------------------
+
+## Gaussian DWF
+
+### One-dimensional SEF
+
+### Equidistant transect
+
+```{r, echo=FALSE, fig.height=7.0, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+pts <- "equidistant"
+fun <- "Gaussian"
+n <- length(profile[[pts]][[fun]]$drw$sef$getLambda())
+for(i in 1L:n) {
+  m <- i + (0L:3L)
+  m[m>n] - n -> m[m>n]
+  plotDraw1D(drw=profile[[pts]][[fun]]$drw, m=m)
+}
+rm(fun,n,i,m)
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("ed_eqd_Gaussian")
+```
+
+--------------------------------------------------------------------------------
+
+#### Random transect
+
+```{r, echo=FALSE, fig.height=7.0, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+pts <- "random"
+fun <- "Gaussian"
+n <- length(profile[[pts]][[fun]]$drw$sef$getLambda())
+for(i in 1L:n) {
+  m <- i + (0L:3L)
+  m[m>n] - n -> m[m>n]
+  plotDraw1D(drw=profile[[pts]][[fun]]$drw, m=m)
+}
+rm(fun,n,i,m)
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("ed_rnd_Gaussian")
+```
+
+--------------------------------------------------------------------------------
+
+### One dimensional differential analysis
+
+#### Equidistant transect
+
+```{r, echo=FALSE, fig.height=7.0, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+pts <- "equidistant"
+fun <- "Gaussian"
+n <- length(profile[[pts]][[fun]]$drw$sef$getLambda())
+for(i in 1L:n)
+  plotDerivatives(
+    drw = profile[[pts]][[fun]]$drw,
+    drv = profile[[pts]][[fun]]$drv,
+    j=i
+  )
+rm(pts,fun,n,i)
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("eda_eqd_Gaussian")
+```
+
+--------------------------------------------------------------------------------
+
+#### Random transect
+
+```{r, echo=FALSE, fig.height=7.0, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+pts <- "random"
+fun <- "Gaussian"
+n <- length(profile[[pts]][[fun]]$drw$sef$getLambda())
+for(i in 1L:n)
+  plotDerivatives(
+    drw = profile[[pts]][[fun]]$drw,
+    drv = profile[[pts]][[fun]]$drv,
+    j=i
+  )
+rm(pts,fun,n,i)
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("eda_rnd_Gaussian")
+```
+
+--------------------------------------------------------------------------------
+
+### One-dimensional three-point shape and differential analysis
+
+```{r, echo=FALSE, fig.height=7.0, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+fun <- "Gaussian"
+n <- length(profile3pts[[fun]]$x)
+for(i in 1L:n) {
+  plotDerivatives3Pts(
+    drw = profile3pts[[fun]]$drw[[i]],
+    drv = profile3pts[[fun]]$drv[[i]])
+}
+rm(fun,n,i)
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("3pta_Gaussian")
+```
+
+--------------------------------------------------------------------------------
+
+### Two-dimensional shape and differential analysis
+
+#### Equidistant plot
+
+```{r, echo=FALSE, fig.height=8.2, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+pts <- "equidistant"
+fun <- "Gaussian"
+n <- length(profile2D[[pts]][[fun]]$drw$sef$getLambda())
+for(i in 1L:n)
+  plotDerivatives2D(
+    drw = profile2D[[pts]][[fun]]$drw,
+    drv = profile2D[[pts]][[fun]]$drv,
+    j = i
+  )
+rm(pts,fun,n,i)
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("eda2D_eqd_Gaussian")
+```
+
+--------------------------------------------------------------------------------
+
+#### Random plot
+
+```{r, echo=FALSE, fig.height=8.2, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+pts <- "random"
+fun <- "Gaussian"
+n <- length(profile2D[[pts]][[fun]]$drw$sef$getLambda())
+for(i in 1L:n)
+  plotDerivatives2D(
+    drw = profile2D[[pts]][[fun]]$drw,
+    drv = profile2D[[pts]][[fun]]$drv,
+    j = i
+  )
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("eda2D_rnd_Gaussian")
+```
+
+--------------------------------------------------------------------------------
+
+## Hole effect DWF
+
+### One-dimensional SEF
+
+#### Equidistant transect
+
+```{r, echo=FALSE, fig.height=7.0, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+pts <- "equidistant"
+fun <- "hole_effect"
+n <- length(profile[[pts]][[fun]]$drw$sef$getLambda())
+for(i in 1L:n) {
+  m <- i + (0L:3L)
+  m[m>n] - n -> m[m>n]
+  plotDraw1D(drw=profile[[pts]][[fun]]$drw, m=m)
+}
+rm(fun,n,i,m)
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("ed_eqd_hole_effect")
+```
+
+--------------------------------------------------------------------------------
+
+#### Random transect
+
+```{r, echo=FALSE, fig.height=7.0, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+pts <- "random"
+fun <- "hole_effect"
+n <- length(profile[[pts]][[fun]]$drw$sef$getLambda())
+for(i in 1L:n) {
+  m <- i + (0L:3L)
+  m[m>n] - n -> m[m>n]
+  plotDraw1D(drw=profile[[pts]][[fun]]$drw, m=m)
+}
+rm(fun,n,i,m)
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("ed_rnd_hole_effect")
+```
+
+--------------------------------------------------------------------------------
+
+### One dimensional differential analysis
+
+#### Equidistant transect
+
+```{r, echo=FALSE, fig.height=7.0, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+pts <- "equidistant"
+fun <- "hole_effect"
+n <- length(profile[[pts]][[fun]]$drw$sef$getLambda())
+for(i in 1L:n)
+  plotDerivatives(
+    drw = profile[[pts]][[fun]]$drw,
+    drv = profile[[pts]][[fun]]$drv,
+    j=i
+  )
+rm(pts,fun,n,i)
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("eda_eqd_hole_effect")
+```
+
+--------------------------------------------------------------------------------
+
+#### Random transect
+
+```{r, echo=FALSE, fig.height=7.0, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+pts <- "random"
+fun <- "hole_effect"
+n <- length(profile[[pts]][[fun]]$drw$sef$getLambda())
+for(i in 1L:n)
+  plotDerivatives(
+    drw = profile[[pts]][[fun]]$drw,
+    drv = profile[[pts]][[fun]]$drv,
+    j=i
+  )
+rm(pts,fun,n,i)
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("eda_rnd_hole_effect")
+```
+
+--------------------------------------------------------------------------------
+
+### One-dimensional three-point shape and differential analysis
+
+```{r, echo=FALSE, fig.height=7.0, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+fun <- "hole_effect"
+n <- length(profile3pts[[fun]]$x)
+for(i in 1L:n) {
+  plotDerivatives3Pts(
+    drw = profile3pts[[fun]]$drw[[i]],
+    drv = profile3pts[[fun]]$drv[[i]])
+}
+rm(fun,n,i)
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("3pta_hole_effect")
+```
+
+--------------------------------------------------------------------------------
+
+### Two-dimensional shape and differential analysis
+
+#### Equidistant plot
+
+```{r, echo=FALSE, fig.height=8.2, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+pts <- "equidistant"
+fun <- "hole_effect"
+n <- length(profile2D[[pts]][[fun]]$drw$sef$getLambda())
+for(i in 1L:n)
+  plotDerivatives2D(
+    drw = profile2D[[pts]][[fun]]$drw,
+    drv = profile2D[[pts]][[fun]]$drv,
+    j = i
+  )
+rm(pts,fun,n,i)
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("eda2D_eqd_hole_effect")
+```
+
+--------------------------------------------------------------------------------
+
+#### Random plot
+
+```{r, echo=FALSE, fig.height=8.2, fig.width=9.0, animation.hook='ffmpeg', cache=TRUE}
+pts <- "random"
+fun <- "hole_effect"
+n <- length(profile2D[[pts]][[fun]]$drw$sef$getLambda())
+for(i in 1L:n)
+  plotDerivatives2D(
+    drw = profile2D[[pts]][[fun]]$drw,
+    drv = profile2D[[pts]][[fun]]$drv,
+    j = i
+  )
+```
+
+```{r, echo=FALSE, results='asis'}
+figCounter1$getCaption("eda2D_rnd_hole_effect")
+```
+
+--------------------------------------------------------------------------------
+
+# Appendix III
+
+## Supplementary tables
+
+--------------------------------------------------------------------------------
+
+```{r, echo = FALSE, results = 'asis'}
+rngTab <- readRDS(file="../Data/rngTab.rds")
+tableCounter2$getCaption("rngTab")
+kable(
+  rngTab,
+  col.names = c("$R^2$","Observed","Fitted","Predicted")
+)
+```
+
+--------------------------------------------------------------------------------
+
+## Supplementary figures
+
+### Oribatid distribution
+
+The following seven figures show the distribution of $35$ Oribatid mite species
+inhabiting a peat bog surrounding Lac Geai as predicted by models built using
+pMEM spatial eigenfunctions based on the seven distance weighting functions
+presented in this paper. The specific likelihood coefficients of determination
+differ among the models and are shown in parentheses under the species labels.
+
+![](../Image/Oribatid_predictions-linear.png)
+
+```{r, echo = FALSE, results = 'asis'}
+figCounter2$getCaption("DWFlinear")
+```
+
+--------------------------------------------------------------------------------
+
+![](../Image/Oribatid_predictions-power.png)
+
+```{r, echo = FALSE, results = 'asis'}
+figCounter2$getCaption("DWFpower")
+```
+
+--------------------------------------------------------------------------------
+
+![](../Image/Oribatid_predictions-hyperbolic.png)
+
+```{r, echo = FALSE, results = 'asis'}
+figCounter2$getCaption("DWFhyperbolic")
+```
+
+--------------------------------------------------------------------------------
+
+![](../Image/Oribatid_predictions-spherical.png)
+
+```{r, echo = FALSE, results = 'asis'}
+figCounter2$getCaption("DWFspherical")
+```
+
+--------------------------------------------------------------------------------
+
+![](../Image/Oribatid_predictions-exponential.png)
+
+```{r, echo = FALSE, results = 'asis'}
+figCounter2$getCaption("DWFexponential")
+```
+
+--------------------------------------------------------------------------------
+
+![](../Image/Oribatid_predictions-Gaussian.png)
+
+```{r, echo = FALSE, results = 'asis'}
+figCounter2$getCaption("DWFGaussian")
+```
+
+--------------------------------------------------------------------------------
+
+![](../Image/Oribatid_predictions-hole_effect.png)
+
+```{r, echo = FALSE, results = 'asis'}
+figCounter2$getCaption("DWFhole_effect")
+```
+
+--------------------------------------------------------------------------------
+
+# Appendix reference

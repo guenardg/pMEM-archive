@@ -1,0 +1,88 @@
+---
+DWF:
+  - Linear$^1$
+  - Power$^2$
+  - Hyperbolic$^3$
+  - Spherical$^4$
+  - Exponential$^5$
+  - Gaussian$^6$
+  - Hole effect$^7$
+Continuity:
+  - $C_1$
+  - $C_0$
+  - $C_1$
+  - $C_1$
+  - $C_1$
+  - $C_{\geq 3}$
+  - $C_{\geq 3}$
+Number:
+  - $N - 1$
+  - $N - 1$
+  - $N - 1$
+  - $N - 1$
+  - $N - 1$
+  - $\leq N - 1$
+  - $\leq N - 1$
+Patterns:
+  - Linear
+  - Curvilinear
+  - Quadratic
+  - Quadratic
+  - Curvilinear
+  - Sinusoidal
+  - Sinusoidal
+Slope:
+  - Steep
+  - Steep
+  - Steep
+  - Steep
+  - Steep
+  - Gentle
+  - Gentle
+First derivative:
+  - straight step
+  - hyperboloid
+  - slanted step
+  - slanted step
+  - curved slanted step
+  - sinusoidal
+  - sinusoidal
+Remarks:
+  - >
+    Second and third derivatives featuring one-directional and two-directional
+    spikes, respectively. Slope changes occuring at the points for equidistant
+    transects, but may occur between the points for non-equidistant transects.
+    In the 2D case, plane magnitude and orientation feature a similar behaviour.
+  - >
+    Curves forming ogee arcs blending into linear patterns as $\alpha$ nears the
+    value $1$ (i.e. the linear DWF). Second and third derivatives are sharp
+    two-directional spikes. Slope changes occur at the points for both
+    equidistant and non-equidistant transects. In the 2D case, plane magnitude
+    and orientation feature a analogous behaviour.
+  - >
+    Second and third derivatives showing one-directional and two-directional
+    spikes, respectively. Abrupt slope shifts occuring at the points for
+    equidistant transects and that may occur between the points for
+    non-equidistant transects. In the 2D case, plane magnitude and orientation
+    features a similar behaviour as do the curves in the 1D transects.
+  - >
+    Very similar to that of the hyperbolic DWF. Second and third derivatives
+    showing one-directional and two-directional spikes, respectively, with
+    abrupt slope shifts occuring at the points for equidistant transects, but
+    may be occurring between the points for non-equidistant transects. In the 2D
+    case, plane magnitude and orientation featuring a similar behaviour as do
+    the curves in the 1D transects.
+  - >
+    Second and third derivatives showing one-directional and two-directional
+    spikes, respectively, with abrupt slope shifts occurring at the points for
+    equidistant as well as non-equidistant transects. In the 2D case, plane
+    magnitude and orientation featuring a similar behaviour as do the curves in
+    the 1D transects.
+  - >
+    In the 2D case, the SEF and all the derivatives are also 2D sinusoids, and
+    this irrespective of point distribution.
+  - >
+    In the 2D case, the SEF and all the derivatives are also 2D sinusoids, and
+    this irrespective of point distribution. The number of SEF tends to be
+    smaller than for the Gaussian, at least for the 1D case.
+---
