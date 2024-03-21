@@ -29,9 +29,25 @@ knitr::opts_chunk$set(echo = TRUE)
 
 source("../Analysis/pMEM-aux.R")
 
-load(file="../Data/profile.rda")
-load(file="../Data/profile3pts.rda")
+## Load the 1D profiles:
+profile <- list(equidistant = list(), random = list())
 
+for(i in c("x","linear","power","hyperbolic","spherical","exponential",
+           "Gaussian","hole_effect")) {
+  
+  readRDS(sprintf("../Data/profile-EQ-%s.rds",i)) -> profile$equidistant[[i]]
+  
+  readRDS(sprintf("../Data/profile-RD-%s.rds",i)) -> profile$random[[i]]
+  
+}
+
+profile3pts <- list()
+
+for(i in c("linear","power","hyperbolic","spherical","exponential",
+           "Gaussian","hole_effect"))
+  readRDS(sprintf("../Data/profile3pts-%s.rds",i)) -> profile3pts[[i]]
+
+## Load the 2D profiles:
 profile2D <- list(equidistant = list(), random = list())
 
 for(i in c("coords","linear","power","hyperbolic","spherical",

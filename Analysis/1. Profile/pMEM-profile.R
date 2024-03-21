@@ -139,9 +139,34 @@ if(FALSE) {
   
   rm(n,i,j,x,cl)
   
-  save(profile, file="../../Data/profile.rda")
+  for(i in names(profile$equidistant))
+    sprintf("../../Data/profile-EQ-%s.rds",i) %>%
+    saveRDS(profile$equidistant[[i]], file=.)
   
-} else load(file="../../Data/profile.rda")
+  for(i in names(profile$random))
+    sprintf("../../Data/profile-RD-%s.rds",i) %>%
+    saveRDS(profile$random[[i]], file=.)
+  
+  rm(i)
+  
+} else {
+  
+  profile <- list(equidistant = list(), random = list())
+  
+  for(i in c("x","linear","power","hyperbolic","spherical","exponential",
+             "Gaussian","hole_effect")) {
+    
+    sprintf("../../Data/profile-EQ-%s.rds",i) %>%
+      readRDS -> profile$equidistant[[i]]
+    
+    sprintf("../../Data/profile-RD-%s.rds",i) %>%
+      readRDS -> profile$random[[i]]
+    
+  }
+  
+  rm(i)
+  
+}
 
 ## Code to display the spatial eigenfunctions four-by-four:
 if(FALSE) {
@@ -247,9 +272,24 @@ if(FALSE) {
   
   rm(cl,i,j)
   
-  save(profile3pts, file="../../Data/profile3pts.rda")
+  for(i in names(profile3pts))
+    sprintf("../../Data/profile3pts-%s.rds",i) %>%
+    saveRDS(profile3pts[[i]], file=.)
   
-} else load(file="../../Data/profile3pts.rda")
+  rm(i)
+  
+} else {
+  
+  profile3pts <- list()
+  
+  for(i in c("linear","power","hyperbolic","spherical","exponential",
+             "Gaussian","hole_effect"))
+    sprintf("../../Data/profile3pts-%s.rds",i) %>%
+    readRDS -> profile3pts[[i]]
+  
+  rm(i)
+  
+}
 
 ## Three-point one-dimensional spatial eigenfunction profile plotting script:
 if(FALSE) {
@@ -278,6 +318,18 @@ if(FALSE) {
   
   profile2D <- list()
   
+  c( 0.4172758, 0.03786392,
+     0.1963081,-0.32355223,
+     0.5910233, 0.08128149,
+    -0.1712318,-0.86602540,
+     0.7605802, 0.86602540,
+    -1.0000000,-0.51367787,
+     1.0000000,-0.06088640) %>%
+    matrix(
+      ncol=2L, byrow=TRUE,
+      dimnames=list(NULL,c("x","y"))
+    ) -> rnd.coords
+  
   if(!require(parallel)) break
   
   cl <- makeForkCluster(2L)
@@ -294,12 +346,7 @@ if(FALSE) {
         y = c(rep(sqrt(3)/2,2L),rep(0,3L),rep(-sqrt(3)/2,2L))
       ) -> coords
     } else if(i == "random") {
-      cbind(
-        x = runif(7,-0.5,0.5),
-        y = runif(7,-sqrt(3)/2,sqrt(3)/2)
-      ) -> coords
-      rerange(coords[,1L],-1,1) -> coords[,1L]
-      rerange(coords[,2L],-sqrt(3)/2,sqrt(3)/2) -> coords[,2L]
+      coords <- rnd.coords
     }
     
     profile2D[[i]] <- list(coords = coords)
@@ -312,25 +359,25 @@ if(FALSE) {
       switch(
         j,
         linear = draw2D(
-          x=coords, m=genDistMetric(), f=genDWF(j,2), ext=0.25, by=0.01
+          x=coords, m=genDistMetric(), f=genDWF(j,2), ext=0.25, by=0.025
         ),
         power = draw2D(
-          x=coords, m=genDistMetric(), f=genDWF(j,2,0.5), 0.25, 0.01
+          x=coords, m=genDistMetric(), f=genDWF(j,2,0.5), 0.25, 0.025
         ),
         hyperbolic = draw2D(
-          x=coords, m=genDistMetric(), f=genDWF(j,2,1), 0.25, 0.01
+          x=coords, m=genDistMetric(), f=genDWF(j,2,1), 0.25, 0.025
         ),
         spherical = draw2D(
-          x=coords, m=genDistMetric(), f=genDWF(j,2), 0.25, 0.01
+          x=coords, m=genDistMetric(), f=genDWF(j,2), 0.25, 0.025
         ),
         exponential = draw2D(
-          x=coords, m=genDistMetric(), f=genDWF(j,2), 0.25, 0.01
+          x=coords, m=genDistMetric(), f=genDWF(j,2), 0.25, 0.025
         ),
         Gaussian = draw2D(
-          x=coords, m=genDistMetric(), f=genDWF(j,2), 0.25, 0.01
+          x=coords, m=genDistMetric(), f=genDWF(j,2), 0.25, 0.025
         ),
         hole_effect = draw2D(
-          x=coords, m=genDistMetric(), f=genDWF(j,2), 0.25, 0.01
+          x=coords, m=genDistMetric(), f=genDWF(j,2), 0.25, 0.025
         )
       ) -> profile2D[[i]][[j]]$drw
       getDerivatives2D(profile2D[[i]][[j]]$drw, cl) -> profile2D[[i]][[j]]$drv
@@ -339,7 +386,7 @@ if(FALSE) {
   
   stopCluster(cl)
   
-  rm(i,j,coords,cl)
+  rm(rnd.coords,i,j,coords,cl)
   
   ## system(sprintf("kill -9 %s",paste(pids,collapse=" ")))
   ## rm(pids)
@@ -364,6 +411,7 @@ if(FALSE) {
       readRDS -> profile2D$equidistant[[i]]
     sprintf("../../Data/profile2D-RD-%s.rds",i) %>%
       readRDS -> profile2D$random[[i]]
+    
   }
   
   rm(i)
@@ -374,7 +422,7 @@ if(FALSE) {
   
   if(dev.cur() > 1) dev.off()
   
-  pts <- "equidistant"
+  pts <- "random"
   
   fun <- "hyperbolic"
   
