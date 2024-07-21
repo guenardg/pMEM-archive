@@ -8,6 +8,33 @@ headers:
       points, and predicted by the model over the prediction grid.
 captions:
   - 
+    label: res_dwf
+    caption: >
+      Mean coefficient of prediction ($P^2$) of the different distance weighting
+      functions during the simulations and the different sample sizes ($n$) of
+      the spatial models obtained for every map-subset combination.
+  - 
+    label: res_map
+    caption: >
+      Mean coefficient of prediction ($P^2$) of the $25$ simulated random maps
+      (two-dimensional pseudo-data sets; map numbers are shown under the stacked
+      vertical bars) during the simulations and the different sample sizes of
+      the spatial models obtained from the best distance weighting functions;
+      the latter was defined as the one providing the highest value of the
+      prediction quality metric for any map and subset combination. The maps are
+      shown in increasing order of the $P^2$ for the highest sample size
+      ($n=500$).
+  - 
+    label: res_subset
+    caption: >
+      Mean coefficient of prediction ($P^2$) of the various random point subsets
+      during the simulations and the different sample sizes of the spatial
+      models obtained from the best distance weighting functions; the latter
+      being defined as the one providing the highest value of the prediction
+      quality metric for any map and subset combination. The subsets are shown
+      in increasing order of the $P^2$ for the highest sample size ($n=500$, the
+      subset numbers are only cardinal).
+  - 
     label: DWFlinear
     caption: >
       Results of the spatially-explicit model predicting the distribution of
@@ -19,8 +46,8 @@ captions:
       maps as rainbow colors and observed values at the sampling locations are
       presented with dots using the same rainbow color scale as for the model
       predictions; the absent species are represented as an $\times$ symbol. The
-      likelihood-based coefficients of determination ($R^2$) are located in
-      parenthesis under the species labels.
+      likelihood-based coefficients of determination ($R^2$) are shown in
+      parentheses under the species labels.
   - 
     label: DWFpower
     caption: >
@@ -33,8 +60,8 @@ captions:
       maps as rainbow colors and observed values at the sampling locations are
       presented with dots using the same rainbow color scale as for the model
       predictions; the absent species are represented as an $\times$ symbol. The
-      likelihood-based coefficients of determination ($R^2$) are located in
-      parenthesis under the species labels.
+      likelihood-based coefficients of determination ($R^2$) are shown in
+      parentheses under the species labels.
   - 
     label: DWFhyperbolic
     caption: >
@@ -47,8 +74,8 @@ captions:
       maps as rainbow colors and observed values at the sampling locations are
       presented with dots using the same rainbow color scale as for the model
       predictions; the absent species are represented as an $\times$ symbol. The
-      likelihood-based coefficients of determination ($R^2$) are located in
-      parenthesis under the species labels.
+      likelihood-based coefficients of determination ($R^2$) are shown in
+      parentheses under the species labels.
   - 
     label: DWFspherical
     caption: >
@@ -61,8 +88,8 @@ captions:
       maps as rainbow colors and observed values at the sampling locations are
       presented with dots using the same rainbow color scale as for the model
       predictions; the absent species are represented as an $\times$ symbol. The
-      likelihood-based coefficients of determination ($R^2$) are located in
-      parenthesis under the species labels.
+      likelihood-based coefficients of determination ($R^2$) are shown in
+      parentheses under the species labels.
   - 
     label: DWFexponential
     caption: >
@@ -75,8 +102,8 @@ captions:
       maps as rainbow colors and observed values at the sampling locations are
       presented with dots using the same rainbow color scale as for the model
       predictions; the absent species are represented as an $\times$ symbol. The
-      likelihood-based coefficients of determination ($R^2$) are located in
-      parenthesis under the species labels.
+      likelihood-based coefficients of determination ($R^2$) are shown in
+      parentheses under the species labels.
   - 
     label: DWFGaussian
     caption: >
@@ -89,8 +116,8 @@ captions:
       maps as rainbow colors and observed values at the sampling locations are
       presented with dots using the same rainbow color scale as for the model
       predictions; the absent species are represented as an $\times$ symbol. The
-      likelihood-based coefficients of determination ($R^2$) are located in
-      parenthesis under the species labels.
+      likelihood-based coefficients of determination ($R^2$) are shown in
+      parentheses under the species labels.
   - 
     label: DWFhole_effect
     caption: >
@@ -103,6 +130,6 @@ captions:
       maps as rainbow colors and observed values at the sampling locations are
       presented with dots using the same rainbow color scale as for the model
       predictions; the absent species are represented as an $\times$ symbol. The
-      likelihood-based coefficients of determination ($R^2$) are located in
-      parenthesis under the species labels.
+      likelihood-based coefficients of determination ($R^2$) are shown in
+      parentheses under the species labels.
 ---

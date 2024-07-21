@@ -22,47 +22,82 @@ if(FALSE) {
        xlab = "", ylab = "", cex.axis = 2, lwd = 2)
   lines(x = d, y = genDWF("linear",2)(d), col = "red", lwd = 2)
   lines(x = d, y = genDWF("linear",3)(d), col = "blue", lwd = 2)
-  text(x = 2, y = 0.9, label = "Linear", adj = 0,
+  text(x = 1.5, y = 0.85, label = "Linear", adj = 0,
        cex = 2)
+  legend(x = 3.2, y = 0.85, lwd=1, col=c("black","red","blue"), cex=1.25,
+         legend = expression(
+           italic(d[max]) == 1,
+           italic(d[max]) == 2,
+           italic(d[max]) == 3))
   
   plot(x = d, y = genDWF("power",1,1)(d), type = "l", ylim = c(0,1),
        las = 1L, xlab = "", ylab = "", cex.axis = 2, lwd = 2)
   lines(x = d, y = genDWF("power",2,0.5)(d), col = "red", lwd = 2)
   lines(x = d, y = genDWF("power",3,0.5)(d), col = "blue", lwd = 2)
-  text(x = 2, y = 0.9, label = "Power", adj = 0,
+  text(x = 1.5, y = 0.85, label = "Power", adj = 0,
        cex = 2)
+  legend(x = 3.2, y = 0.85, lwd=1, col=c("black","red","blue"), cex=1.25,
+         legend = expression(
+           paste(italic(d[max]) == 1, ", ",  alpha == 1),
+           paste(italic(d[max]) == 2, ", ",  alpha == 0.5),
+           paste(italic(d[max]) == 3, ", ",  alpha == 0.5)))
   
   plot(x = d, y = genDWF("hyperbolic",1,1)(d), type = "l", ylim = c(0,1),
        las = 1L, xlab = "", ylab = "", cex.axis = 2, lwd = 2)
   lines(x = d, y = genDWF("hyperbolic",2,0.5)(d), col = "red", lwd = 2)
   lines(x = d, y = genDWF("hyperbolic",3,0.5)(d), col = "blue", lwd = 2)
-  text(x = 2, y = 0.9, cex = 2,
+  text(x = 1.5, y = 0.85, cex = 2,
        label = "Hyperbolic", adj=0)
+  legend(x = 3.2, y = 0.85, lwd=1, col=c("black","red","blue"), cex=1.25,
+         legend = expression(
+           paste(italic(d[max]) == 1, ", ",  alpha == 1),
+           paste(italic(d[max]) == 2, ", ",  alpha == 0.5),
+           paste(italic(d[max]) == 3, ", ",  alpha == 0.5)))
   
-  plot(x = d, y = genDWF("spherical",1)(d), type = "l", ylim = c(0,1), las = 1L, xlab = "",
-       ylab = "", cex.axis = 2, lwd = 2)
+  plot(x = d, y = genDWF("spherical",1)(d), type = "l", ylim = c(0,1), las = 1L,
+       xlab = "", ylab = "", cex.axis = 2, lwd = 2)
   lines(x = d, y = genDWF("spherical",2)(d), col = "red", lwd = 2)
   lines(x = d, y = genDWF("spherical",3)(d), col = "blue", lwd = 2)
-  text(x = 2, y = 0.9, label = "Spherical", adj = 0, cex = 2)
+  text(x = 1.5, y = 0.85, label = "Spherical", adj = 0, cex = 2)
+  legend(x = 3.2, y = 0.85, lwd=1, col=c("black","red","blue"), cex=1.25,
+         legend = expression(
+           italic(d[max]) == 1,
+           italic(d[max]) == 2,
+           italic(d[max]) == 3))
   
   plot(x = d, y = genDWF("exponential",1)(d), type = "l", ylim = c(0,1),
        las = 1L, xlab = "", ylab = "", cex.axis = 2, lwd = 2)
   lines(x = d, y = genDWF("exponential",0.5)(d), col = "red", lwd = 2)
   lines(x = d, y = genDWF("exponential",2)(d), col = "blue", lwd = 2)
-  text(x = 2, y = 0.9, label = "Exponential", adj = 0, cex = 2)
+  text(x = 1.5, y = 0.85, label = "Exponential", adj = 0, cex = 2)
+  legend(x = 3.2, y = 0.85, lwd=1, col=c("black","red","blue"), cex=1.25,
+         legend = expression(
+           italic(d[max]) == 1,
+           italic(d[max]) == 0.5,
+           italic(d[max]) == 2))
   
   plot(x = d, y = genDWF("Gaussian",1)(d), type = "l", ylim = c(0,1),
        las = 1L, xlab = "", ylab = "", cex.axis = 2, lwd = 2)
   lines(x = d, y = genDWF("Gaussian",0.5)(d), col = "red", lwd = 2)
   lines(x = d, y = genDWF("Gaussian",2)(d), col = "blue", lwd = 2)
-  text(x = 2, y = 0.9, label = "Gaussian", adj = 0, cex = 2)
+  text(x = 1.5, y = 0.85, label = "Gaussian", adj = 0, cex = 2)
+  legend(x = 3.2, y = 0.85, lwd=1, col=c("black","red","blue"), cex=1.25,
+         legend = expression(
+           italic(d[max]) == 1,
+           italic(d[max]) == 0.5,
+           italic(d[max]) == 2))
   
   plot(x = d, y = genDWF("hole_effect",1)(d), type = "l", ylim = c(-0.2,1),
        las = 1L, xlab = "", ylab = "", cex.axis = 2, lwd = 2)
   lines(x = d, y = genDWF("hole_effect",0.5)(d), col = "red", lwd = 2)
   lines(x = d, y = genDWF("hole_effect",2)(d), col = "blue", lwd = 2)
   abline(h = 0, lty = 3L)
-  text(x = 2, y = 0.9, label = "Hole effect", adj = 0, cex = 2)
+  text(x = 1.5, y = 0.85, label = "Hole effect", adj = 0, cex = 2)
+  legend(x = 3.2, y = 0.85, lwd=1, col=c("black","red","blue"), cex=1.25,
+         legend = expression(
+           italic(d[max]) == 1,
+           italic(d[max]) == 0.5,
+           italic(d[max]) == 2))
   
   dev.off()
   
@@ -440,3 +475,36 @@ if(FALSE) {
 }
 
 rm(profile2D)
+
+kable(
+  data.frame(
+    Name = c("Linear","Concave up","Concave down"),
+    Definition = c(
+      "$a_{i,j} = 1-\\frac{d_{i,j}}{d_{max}}$",
+      "$a_{i,j} = 1-\\left(\\frac{d_{i,j}}{d_{max}}\\right)^\\alpha$",
+      "$a_{i,j} = \\frac{1}{d_{i,j}^\\alpha}$"
+    ),
+    Ref = c("(T1 1)","(T1 2)","(T1 3)")
+  ),
+  align = "llr",col.names = c("Name","Definition","")
+)
+
+kable(
+  data.frame(
+    Name = sprintf("$\\mathrm{%s}$",c("Spherical","Exponential","Gaussian","Hole effect")),
+    Definition = c(
+      "$w_i = \\begin{cases}
+          d_i < d_{max}, 1 - 1.5\\left(\\frac{d_i}{d_{max}}\\right) +  0.5\\left(\\frac{d_i}{d_{max}}\\right)^3 \\\\
+          d_i \\geq d_{max}, 0
+        \\end{cases}$",
+      "$w_i = \\mathrm{e}^{-\\frac{d_i}{d_{max}}}$",
+      "$w_i = \\mathrm{e}^{-\\left(\\frac{d_i}{d_{max}}\\right)^2}$",
+      "$w_i = \\begin{cases}
+          d_i = 0, 1 \\\\
+          d_i > 0, \\frac{d_{max}}{\\pi d_i}\\sin \\frac{\\pi d_i}{d_{max}}
+        \\end{cases}.$"
+    ),
+    Ref = sprintf("$\\mathrm{%s}$",c("(T2 1)","(T2 2)","(T2 3)","(T2 4)"))
+  ),
+  align = "llr",col.names = c("Name","Definition","")
+)

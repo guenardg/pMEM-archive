@@ -10,16 +10,16 @@ header-includes:
   - \usepackage{lineno}
   - \linenumbers
 output:
-  latex_document:
+  pdf_document:
     toc: no
     toc_depth: 3
   word_document:
     toc: no
     toc_depth: 3
-  pdf_document:
+  html_document:
     toc: no
     toc_depth: 3
-  html_document:
+  latex_document:
     toc: no
     toc_depth: 3
 bibliography: pMEM.bib
@@ -111,25 +111,29 @@ Running headline: Spatially-explicit predictions
     variation, which we call « predictive Moran's Eigenvector Maps » (pMEM),
     that can be used to make spatially-explicit predictions for any
     environmental variables, biotic or abiotic. It unites features of a method
-    called « Moran's Eigenvector Maps » and spatial interpolation, and produces
-    sets of descriptors that can be used with any other modelling method, such
-    as regressions, support vector machines, regression trees, artificial neural
-    networks, and so on. Seven types of pMEM were defined and studied.
-2.  We studied each type of spatial descriptors in terms of their continuity and
-    smoothness and performed a simulation study to determine their power at
-    making accurate predictions for spatially-structured variables.
+    called « Moran's Eigenvector Maps » (MEM) and spatial interpolation, and
+    produces sets of descriptors that can be used with any other modelling
+    method, such as regressions, support vector machines, regression trees,
+    artificial neural networks, and so on. The pMEM are the predictive
+    eigenvectors produced by using a DWF in the construction of MEMs. Seven
+    types of pMEM, each associated with one of seven different distance
+    weighting functions (DWF), were defined and studied.
+
+2.  We performed a simulation study to determine the power of different types of
+    pMEM eigenfunctions at making accurate predictions for spatially-structured
+    variables.
+
 3.  We exemplified the application of the method to the prediction of the
     spatial distribution of $35$ Oribatid mite species living in a peat moss
     (*Sphagnum*) mat on the shore of a Laurentian lake. We also provide an `R`
-    language package called **pMEM** to make calculation easily available to end
-    users.
-4.  The results indicate that whereas predictive Moran's Eigenvector Maps
-    obtained from different distance weighting functions had different
-    properties in terms of their smoothness and shape, any of them could be the
-    best suited one to predict spatial variability in a given data set. Their
-    application to the prediction of mite species distributions highlights the
-    adequacy of predictive Moran's Eigenvector Maps for predicting species
-    distributions, and for providing spatially-explicit estimates of
+    language package called **pMEM** to make calculations easily available to
+    end users.
+
+4.  The results indicate that anyone of the pMEMs obtained from the different
+    distance weighting functions could be the best suited one to predict spatial
+    variability in a given data set. Their application to the prediction of mite
+    species distributions highlights the capability of pMEMs for predicting
+    species distributions, and for providing spatially-explicit estimates of
     environmental variables that are useful for predicting species
     distributions.
 
@@ -158,39 +162,42 @@ descriptors.
 Spatial structuring entails that the probability of making a particular
 observation at a given location in space is conditional on the values observed
 at other points around that location. Consequently, it is possible to estimate
-values of a spatially-structured variable at locations in an area using a set of
-values of that variable sampled in the same area. Kriging [@Matheron_1962] is an
-interpolation method that can be used for that purpose [@legendre_spatial_1989;
-@pebesma_multivariable_2004]. Kriging relies on an estimator of the spatial
-variation, which is a function of the pairwise distances between locations, in
-order to weight the surrounding observations before averaging. Alternatively, a
-method called co-kriging enables one to use data from other observed variables
-to help predict the value of a variable of interest [@myers_co-kriging_1984].
-Kriging and co-kriging have long been shown to be useful for making
-spatially-explicit predictions.
+values of a spatially-structured variables at locations in an area using a set
+of values of that variable sampled in the same area. Kriging [@Matheron_1962] is
+an interpolation method that can be used for that purpose
+[@legendre_spatial_1989; @pebesma_multivariable_2004]. Kriging relies on an
+estimator of the spatial variation, which is a function of the pairwise
+distances between locations, in order to weight the surrounding observations
+before averaging. Alternatively, a method called co-kriging enables one to use
+data from other observed variables to help predict the value of a variable of
+interest [@myers_co-kriging_1984]. Kriging and co-kriging have long been shown
+to be useful for making spatially-explicit predictions.
 
 Moran's eigenvector maps (MEM), which were proposed by @dray_spatial_2006, are
 sets of latent descriptors used to represent spatial variation in models. MEM
 provide sets of orthogonal (i.e., linearly independent) variables generated from
 the pairwise distances among the sampling sites, which are calculated from the
-site coordinates. Each of these latent variables, which is called a spatial
-eigenvector (hereafter referred to as an SEV), has a corresponding eigenvalue,
-which is related to and indicates the spatial scale of the spatial variation it
-describes. SEVs are used as descriptors of spatial variability in any sort of
-statistical model suitable to represent single or multiple random (dependent)
-variable(s), such as (generalized) linear regression, regression trees, gradient
-boosted trees [@mason_boosting_1999; @chen_xgboost_2016], Bayesian additive
-regression trees [@chipman_bart_2010], support vector machines
-[@cortes_support-vector_1995], artificial neural networks
-[@Goodfellow-et-al-2016], and so on. MEMs get their name from the Moran's index
-[@moran_notes_1950], as there is a simple relationship between the eigenvalue
-associated with an SEV and the Moran $I$ index calculated for the largest
-distance class of that SEV. Spatial orthogonal eigenvectors whose eigenvalues
-were not strict linear functions of Moran’s $I$ have also been described in the
-@borcard_all-scale_2002, @griffith_spatial_2006, and @blanchet_modelling_2008
-papers, among others.
+spatial distances among the sites, or other types of spatial relationship
+matrices, describing, for example, the connectivity among the sites. Each of
+these latent variables, which is called a spatial eigenvector (hereafter
+referred to as an SEV), has a corresponding eigenvalue, which is related to, and
+indicates the spatial scale of, the spatial variation it describes. SEVs are
+used as descriptors of spatial variability in any sort of statistical model
+suitable to represent single or multiple random (dependent) variable(s), such as
+(generalized) linear regression, regression trees, gradient boosted trees
+[@mason_boosting_1999; @chen_xgboost_2016], Bayesian additive regression trees
+[@chipman_bart_2010], support vector machines [@cortes_support-vector_1995],
+artificial neural networks [@Goodfellow-et-al-2016], and so on. MEMs get their
+name from the Moran's index of spatial autocorrelation [@moran_notes_1950], as
+there is a simple relationship between the eigenvalue associated with an SEV and
+Moran's $I$ index calculated for the largest distance class of that SEV. Spatial
+orthogonal eigenvectors whose eigenvalues were not strict linear functions of
+Moran’s $I$ have also been described, for instances PCNM by
+@borcard_all-scale_2002, ISOMAP with anisotropic SEV by @mahecha_revealing_2008,
+and AEM by @blanchet_modelling_2008, among other papers
+[@griffith_spatial_2006].
 
-## Spatial eigenfunctions
+## From discrete to continuous domain
 
 Each SEV from an MEM can be regarded as the set of values of an underlying
 spatial eigenfunction (hereafter referred to as an SEF) for the set of sampling
@@ -225,55 +232,21 @@ functions used for kriging (namely, the spherical, exponential, Gaussian, and
 hole effect variogram functions) can be adapted for use within the MEM-based
 predictive SEF framework.
 
-## Shape, continuity, and smoothness
-
-MEM produce SEV that appear to represent sinusoidal patterns with various
-periods. They have a regular sinusoidal shape when the sampling interval along a
-transect, or the sampling grid on a surface, is regular. Their shapes appear
-deformed when the sampling intervals are irregular. However, whether this
-behaviour of SEF also occurs between the observed sampling locations has yet to
-be formally studied; providing such an assessment is one of the objectives of
-the present paper. A property of SEF that was given special attention during
-this assessment is the smoothness, which is the extension of function continuity
-to time derivatives of higher orders.
-
-The smoothness of a function determines the number of times that it can be
-differentiated, thus extending the notion of continuity to higher-order
-derivatives. A continuous function whose first derivative is discontinuous is
-said to be class-0 ($C^0$) continuous, whereas one whose first derivative is
-continuous, but not its second derivative, is said to be $C^1$ continuous. By
-the same rule, a function whose $k^\mathrm{th}$ derivative is continuous, but
-whose $k+1^\mathrm{th}$ derivative is discontinuous is said to be $C^k$
-continuous. Functions such as sines and cosines, which are differentiable any
-number of times, are $C^\infty$ continuous.
-
-Smooth SEF may be more effective at modelling continuous spatial processes.
-However, to what extent smooth SEF enable better predictions than SEF lacking
-smoothness hitherto remains an open question. Indeed, spatial processes are not
-necessarily continuous or inclined to produce a continuous and smooth outcome.
-Also, multiple discontinuous functions may be combined in ways amenable to
-represent a continuous or nearly continuous process, at least down to some
-calculable scale. Therefore, in addition to studying the SEF properties in terms
-of shape and smoothness, the present study needs to provide an assessment of SEF
-performance for making predictions in practice.
-
 ## Objectives
 
-In the present study, we will first develop the calculations whereby the MEM
-framework can be adapted to generate SEF that are suitable for making
-predictions, including the addition of new DWF derived from common variogram
-models. We will analyse the smoothness, up the the third derivative, of SEF
-obtained from seven different DWF in the one-dimensional (transect) and the
-two-dimensional (surface) contexts. Following that preliminary assessment of the
-SEF, we will carry out a simulation study to test their performance at
-predicting spatial variation in various situations involving various types of
-randomly-generated spatially-structured (Brownian motion) plots, random sets of
-sampling locations, and sample sizes for each of the seven DWF under
-consideration. Lastly, we will exemplify spatial modelling in practice by
+In the present study, we developed the calculations whereby the MEM framework
+can be adapted to generate SEF that are suitable for making predictions (i.e.,
+informed interpolation) for environmental variables observed in the field, be
+they abiotic (e.g., temperature, humidity, pH, pressure) or biotic (e.g.,
+species abundance, density, or diversity). We also included new DWF derived from
+common variogram models. We carried out a simulation study to test their
+performance at predicting spatial variation in various situations involving
+various types of randomly-generated spatially-structured (Brownian motion)
+plots, random sets of sampling locations, and sample sizes for each of the seven
+DWF under consideration. Lastly, we exemplified spatial modelling in practice by
 modelling the substrate density and water content of the peat vegetation mat
-located on the shore of a Canadian shield bog lake, and the spatial distribution
-of $35$ Oribatid mite species living in that soil. An implicit objective of our
-study is also to provide a framework to help scientists in developing new DWFs.
+located along the shore of a Canadian Shield bog lake, and the spatial
+distribution of $35$ Oribatid mite species living in that soil.
 
 # Materials and methods
 
@@ -281,23 +254,24 @@ study is also to provide a framework to help scientists in developing new DWFs.
 
 MEM calculation, as defined in @dray_spatial_2006, proceeds from the two
 matrices that we mentioned previously in the introduction, namely the
-connectivity $\mathrm{B}$ and the weights $\mathrm{A}$. The next step consists
-in the Hadamard (element-wise) product of these two matrices resulting in a
-weighted connectivity matrix ($\{\mathbf{B*A}\}$). Matrix $\mathrm{B}$ has
+connectivity $\mathbf{B}$ and the weights $\mathbf{A}$. The next step consists
+in the Hadamard (element-wise) product of these two matrices, resulting in a
+weighted connectivity matrix ($\{\mathbf{B*A}\}$). Matrix $\mathbf{B}$ has
 values $b_{i,j} = 1$ when any two points $i$ and $j$ are connected and
 $b_{i,j} = 0$ otherwise. It can be obtained from a list of edges from a
 connectivity graph, such as that derived, for instance, from a Delauney
 triangulation, a minimum spanning tree, or simply by truncation, i.e., by
 applying a distance threshold to a matrix of pairwise distances among locations
 ($[d_{i,j}]$, e.g., a Cartesian or geodesic two-dimensional space, a
-three-dimensional Euclidean space, or a one-dimensional transect). As stated
-earlier, the spatial weights matrix $\mathbf{A}$ may be obtained by transforming
-the elements of $[d_{i,j}]$ using a DWF. Following that, matrix
-$\{\mathbf{B*A}\}$ is row- and column-centred to a mean of $0$ and submitted to
-eigenvalue decomposition. By virtue of the centring to $0$, the centred weighted
-connectivity matrix has a rank of at most $n - 1$, where $n$ is the number of
-different locations. It thus has at most $n - 1$ non-zero eigenvalues and
-eigenvectors. The whole process can be written in matrix notation as follows:
+three-dimensional Euclidean space, or a one-dimensional transect), or some other
+type of connectivity matrix among the sites. As stated earlier, the spatial
+weights matrix $\mathbf{A}$ may be obtained by transforming the elements of
+$[d_{i,j}]$ using a DWF. Following that, matrix $\{\mathbf{B*A}\}$ is row- and
+column-centred to a mean of $0$ and submitted to eigenvalue decomposition. By
+virtue of the centring to $0$, the centred weighted connectivity matrix has a
+rank of at most $n - 1$, where $n$ is the number of different locations. It thus
+has at most $n - 1$ non-zero eigenvalues and eigenvectors. The whole process can
+be written in matrix notation as follows:
 
 $$
 \mathbf{Q} \{\mathbf{B} * \mathbf{A}\} \mathbf{Q} = \mathbf{U}\mathbf{D}_\lambda\mathbf{U}^\mathsf{T},
@@ -311,8 +285,8 @@ all-ones matrix), $\mathbf{U}$ is a matrix of eigenvectors of dimensions
 $n \times k$, where $k \leq (n - 1)$, and $\mathbf{D}_\lambda$ is a diagonal
 matrix of (non-zero) eigenvalues. As shown by @jong_extreme_2010 there is an
 algebraic equivalence between these eigenvalues and the Moran's index ($I$) of
-their corresponding eigenvectors, had $\mathbf{B*A}$ been used during the index
-calculation. Assuming the values on the diagonal of $\mathbf{B}*\mathbf{A}$ to
+their corresponding eigenvectors, had $\{\mathbf{B*A}\}$ been used during the
+index calculation. Assuming the values on the diagonal of $\{\mathbf{B*A}\}$ to
 be $0$, this equivalence is the following:
 
 $$
@@ -322,9 +296,8 @@ $$
 
 Three DWF have been proposed by @dray_spatial_2006
 (Table `r tableCounter$getNumber("dwf_tab")`). It is noteworthy that these
-functions have in no way been presented as the exhaustive set of all possible
-DWFs; many other suitable functions can be envisioned, which may be suitable for
-specific questions.
+functions do not form an exhaustive set of all possible DWFs; many other such
+functions can be developed, which may be suitable for specific questions.
 
 ## Making predictions
 
@@ -350,70 +323,46 @@ smoothness of the resulting SEF, possibly impacting their adequacy for
 representing spatial phenomena. Notably, the smoothness of the SEF in the
 vicinity of the sampling locations entails that they are representative points
 along continua rather than singularities, around which sharp spatial shifts may
-be occurring.
+be occurring (See Appendix II -- Analysis of SEF shape and smoothness, for an
+in-depth discussion on that subject).
 
 For the sake of simplicity, we will restrict the definition of connectivity to
 be strictly distance-based and thus, from here, disregard any graph-based
 definition. This simplification enables us to formalize both the connectivity
 and distance-weighting into single functions of the distances with parameter
 $d_{max}$ acting as a truncation distance beyond which points are considered
-non-connected. The linear DWF is thus defined as follows:
+non-connected as follows:
 
 $$
 \label{eq3}\tag{3}
 w_{i,j} =
   \begin{cases}
-    d_{i,j} < d_{max}, 1-\frac{d_{i,j}}{d_{max}} \\
+    d_{i,j} < d_{max}, f(d_{i,j}; d_{max}, \alpha) \\
     d_{i,j} \geq d_{max}, 0
-  \end{cases}
-$$
-
-The concave up DWF defined by @dray_spatial_2006 is accurately referred to as
-the power DWF and will hereafter be referred to by that name. It is defined as
-follows:
-
-$$
-\label{eq4}\tag{4}
-w_{i,j} =
-  \begin{cases}
-    d_{i,j} < d_{max}, 1-\left(\frac{d_{i,j}}{d_{max}}\right)^\alpha \\
-    d_{i,j} \geq d_{max}, 0
-  \end{cases}.
-$$
-
-The concave down DWF defined by @dray_spatial_2006 has infinite value at $d=0$
-and would thus be ill-suited as a DWF. In its place, we defined the hyperbolic
-DWF as follows:
-
-$$
-\label{eq5}\tag{5}
-w_i =
-  \begin{cases}
-    d < d_{max}, \frac{\left(1 + \frac{d_i}{d_{max}} \right)^{-\alpha} - 2^{-\alpha}}{1 - 2^{-\alpha}} \\
-    d \geq d_{max}, 0
   \end{cases},
 $$
 
-which makes $w_i$ decrease continuously from $1$ to $0$ as $d_i$ goes from $0$
-to $d_{max}$, while having a square hyperbolic shape, as does Dray et al's
-concave down DWF.
+where $f(d_{i,j}; d_{max}, \alpha)$ is a function of the distance with a range
+parameter $d_{max}$ and a shape parameter $\alpha$ (see Appendix I -- Distance
+weighting function derived from the MEM framework, for details about these
+functions).
 
 These functions take values $0$ for distances above $d_{max}$, thereby involving
 a threshold in an implicit, distance-based, manner. For the calculation of pMEM,
-matrix $\mathbf{W} = [w_{i,j}]$, can therefore replace matrix $\mathbf{B*A}$
+matrix $\mathbf{W} = [w_{i,j}]$, can therefore replace matrix $\{\mathbf{B*A}\}$
 since it involves an implicit distance threshold $d \leq d_{max}$. On the other
 hand, this definition implies that the value $1$ is consistently found on the
 diagonal of $\mathbf{W}$, which alters the equivalence between the eigenvalues
-and corresponding eigenvector's associated Moran's index ($I$), which is now
-described as follows:
+and corresponding eigenvector's associated to Moran's index ($I$), which is now
+calculated as follows:
 
 $$
-\label{eq6}\tag{6}
+\label{eq4}\tag{4}
 I_{\lambda_k} = n \frac{\lambda_k - 1}{\sum_{\forall i,j} w_{i,j} - n},
 $$
 
 Therefore, using a continuous spatial operator has little impact on the
-interpretation of the eigenvectors in terms of the Moran's index.
+interpretation of the eigenvectors in terms of Moran's index.
 
 ### Variogram models
 
@@ -427,7 +376,7 @@ value ($\gamma_n$, i.e., the nugget) towards a theoretical maximum variance
 value ($\gamma_s$, i.e., the sill) as the distance increases as follows:
 
 $$
-\label{eq7}\tag{7}
+\label{eq5}\tag{5}
 \gamma(d) = \gamma_n + (\gamma_s - \gamma_n)f(d),
 $$
 
@@ -444,35 +393,36 @@ DWFs for spatial modelling or plain spatial interpolation using pMEM
 (Figure `r figCounter$getNumber("dwf_shape")`).
 
 It is noteworthy that parameter $d_{max}$ in the exponential, Gaussian, and hole
-effect DWF do not involve a threshold whereby $w_i=0$ when $d_i \geq d_{max}$.
-Also, note that the common definitions for the exponential or the Gaussian DWFs
+effect DWF do not involve a threshold making $w_i=0$ when $d_i \geq d_{max}$.
+Also, note that the common definitions for the exponential and Gaussian DWFs
 would involve multiplying $d_{i,j}/d_{max}$ (or $(d_i/d_{max})^2$) by $3$ within
 the equations. We regarded that multiplication as superfluous since its only
 notable effect is to make the shape of these two DWFs differ more markedly from
-that of the other five DWFs and thus avoided it.
+that of the other five DWFs; we thus avoided it.
 
 ### Spatial eigenfunctions
 
-One can represent the spatial eigenvectors from the centred weight matrix by
+One can represent the spatial eigenvectors of the centred weight matrix by
 performing an algebraic reorganization of the eigensystem equation presented
 earlier (Eq. \ref{eq1}), as follows:
 
 ```{=tex}
 \begin{align}
-\left(\mathbf{I}_n - \frac{1}{n} \mathbf{1}_{n \times n}\right) \mathbf{W} \left(\mathbf{I}_n - \frac{1}{n} \mathbf{1}_{n \times n}\right) &= \mathbf{U} \mathbf{D}_\lambda \mathbf{U}^\mathsf{T} \label{eq8.1}\tag{8.1} \\
-\mathbf{I}_n \mathbf{W} \mathbf{I}_n - \frac{1}{n} \mathbf{I}_n \mathbf{W} \mathbf{1}_{n \times n} - \frac{1}{n} \mathbf{1}_{n \times n} \mathbf{W} \mathbf{I}_n + \frac{1}{n^2} \mathbf{1}_{n \times n} \mathbf{W} \mathbf{1}_{n \times n}  &= \mathbf{U}\mathbf{D}_\lambda \mathbf{U}^\mathsf{T} \label{eq8.2}\tag{8.2} \\
-\mathbf{W} - \frac{1}{n} \mathbf{W} \mathbf{1}_{n \times n} - \frac{1}{n} \mathbf{1}_{n \times n} \mathbf{W} + \frac{1}{n^2} \mathbf{1}_{n \times n} \mathbf{W} \mathbf{1}_{n \times n}  &= \mathbf{U}\mathbf{D}_\lambda \mathbf{U}^\mathsf{T} \label{eq8.3}\tag{8.3} \\
-\left( \mathbf{W} - \frac{1}{n} \mathbf{W} \mathbf{1}_{n \times n} - \frac{1}{n} \mathbf{1}_{n \times n} \mathbf{W} + \frac{1}{n^2} \mathbf{1}_{n \times n} \mathbf{W} \mathbf{1}_{n \times n}  \right) \mathbf{U} \mathbf{D}_{\lambda^{-1}} &= \mathbf{U}  \label{eq8.4}\tag{8.4}
-\end{align}
+\left(\mathbf{I}_n - \frac{1}{n} \mathbf{1}_{n \times n}\right) \mathbf{W} \left(\mathbf{I}_n - \frac{1}{n} \mathbf{1}_{n \times n}\right) &= \mathbf{U} \mathbf{D}_\lambda \mathbf{U}^\mathsf{T} \label{eq6.1}\tag{6.1} \\
+\mathbf{I}_n \mathbf{W} \mathbf{I}_n - \frac{1}{n} \mathbf{I}_n \mathbf{W} \mathbf{1}_{n \times n} - \frac{1}{n} \mathbf{1}_{n \times n} \mathbf{W} \mathbf{I}_n + \frac{1}{n^2} \mathbf{1}_{n \times n} \mathbf{W} \mathbf{1}_{n \times n}  &= \mathbf{U}\mathbf{D}_\lambda \mathbf{U}^\mathsf{T} \label{eq6.2}\tag{6.2} \\
+\mathbf{W} - \frac{1}{n} \mathbf{W} \mathbf{1}_{n \times n} - \frac{1}{n} \mathbf{1}_{n \times n} \mathbf{W} + \frac{1}{n^2} \mathbf{1}_{n \times n} \mathbf{W} \mathbf{1}_{n \times n}  &= \mathbf{U}\mathbf{D}_\lambda \mathbf{U}^\mathsf{T} \label{eq6.3}\tag{6.3} \\
+\left( \mathbf{W} - \frac{1}{n} \mathbf{W} \mathbf{1}_{n \times n} - \frac{1}{n} \mathbf{1}_{n \times n} \mathbf{W} + \frac{1}{n^2} \mathbf{1}_{n \times n} \mathbf{W} \mathbf{1}_{n \times n}  \right) \mathbf{U} \mathbf{D}_{\lambda^{-1}} &= \mathbf{U}  \label{eq6.4}\tag{6.4}
+\end{align},
 ```
-Let $\mathbf{W}^*$ be the weight matrix calculated for $m$ new locations using
-the same DWF as for $\mathbf{W}$ and the distances between the new locations and
-the original ones found in $\mathbf{W}$ (hence, the dimensions of $\mathbf{W}^*$
-are $m \times n$). The values of these new locations on the SEF defined
-previously are obtained as follows:
+where $\mathbf{W}$ is the pairwise weight matrix between the observations. Let
+$\mathbf{W}^*$ be the weight matrix calculated for $m$ new locations using the
+same DWF as for $\mathbf{W}$ and the distances between the new locations and the
+original ones found in $\mathbf{W}$ (hence, the dimensions of $\mathbf{W}^*$ are
+$m \times n$). The values of these new locations on the SEF defined previously
+are obtained as follows:
 
 $$
-\label{eq9}\tag{9}
+\label{eq7}\tag{7}
 \mathbf{U}^* = \left( \mathbf{W}^* - \frac{1}{n} \mathbf{W}^* \mathbf{1}_{n \times n} - \frac{1}{n} \mathbf{1}_{m \times n} \mathbf{W} + \frac{1}{n^2} \mathbf{1}_{m \times n} \mathbf{W} \mathbf{1}_{n \times n}  \right) \mathbf{U} \mathbf{D}_{\lambda^{-1}},
 $$
 
@@ -483,38 +433,18 @@ thus make spatially-explicit predictions. However, we have yet to provide an
 assessment of the adequacy of the seven DWF defined previously for such a
 purpose.
 
-### Assessing SEF smoothness
+## Estimating parameters
 
-We assessed SEF smoothness using locally estimated (moving) polynomials (see
-Appendix I – Assessing SEF smoothness using locally estimated polynomials for
-details). The smoothness of SEF was assessed by generating them on standard
-transects (i.e., a one-dimensional space). We chose to use $11$-point transects,
-whose centre is on the central point. Two such transects were used, one with
-equidistant locations (i.e., separated by a distance of $1$) and the other with
-locations separated by random distances. The latter was generated by drawing ten
-values from a uniform random distribution with a minimum value of $0.5$ and a
-maximum values of $1.5$ and was standardized to have a total length of $10$, and
-thus a mean distance of $1$ between adjacent locations. For each of these two
-transects, sets of SEF were generated for each of the seven DWF described
-previously, for a total of $14$ sets. Since $11$ locations were defined, each of
-these set contained a maximum of ten SEF, and thus a maximum of $140$ SEF could
-be generated. Each SEF was evaluated in steps of $0.001$, beginning at distance
-$0.1$ before the first location (i.e., $-0.01$) and ending at distance $0.1$
-after the last (i.e., $10.1$), allowing for extrapolation margin. We then
-calculated the first three derivatives of each of these function using the
-polynomial spline approach described previously.
-
-### Assessing the effect of point separation
-
-We performed a second demonstration aimed at showing the effect of the evenness
-or unevenness of separation distances, i.e., the distances between neighbouring
-points, on the shape and smoothness of the SEF. To achieve this, we used a
-three-point transect with a total distance of $1$ between the extreme points,
-and whose middle point was located at a distance varying from $0.1$ to $0.9$, in
-increments of $0.1$, between the two endpoints. The three-point transect implied
-that only two SEFs were defined. As in the previous analysis, SEF were estimated
-from distance $-0.1$ to $1.1$ in increments of $0.001$, and their first three
-derivatives were estimated using the method described in the previous paragraph.
+The choice of a DWF, as well as the estimation of parameters $d_{max}$ and
+$\alpha$, can be carried out using different global search methods. For the
+present study we propose to select the most suitable DWF by trying them all,
+while estimating the most suitable DWF parameters separately for each of the
+functions using the directed evolution approach described by @Ardia-RJ-2011-005
+and implemented in **R** language function **DEoptim** [@Mullen-JSS-40-6-1-26].
+The objective criterion to be minimized during the DEoptim global search
+procedure was the mean squared prediction error ($MSE$). By default, function
+**DEoptim** uses a population size ten times the number of parameters (i.e.,
+$20$ individuals in our two-parameter case), and $200$ generations.
 
 ## Numerical simulations
 
@@ -524,21 +454,29 @@ contained $5\,184$ points regularly spaced over a $72 \times 72$ staggered-row
 triangular grid pattern with neighbouring points located at distances $1$ (in
 arbitrary spatial units) from one another. The data were generated at each point
 of that grid following a randomly-seeded Wiener process (i.e., Brownian motion)
-whose implementation is described in the appendices (Appendix I – Algorithm to
+whose implementation is described in the appendices (Appendix I -- Algorithm to
 generate the spatially-structured random maps).
 
 To simulate the effect of sampling variation and sample size ($n$), $25$ sets of
 $500$ vertices were randomly selected. From each of these sets, pairs of subsets
 of $n = 10$, $20$, $50$, $100$, $200$, and $500$ were picked as the training
 data sets, and all other $5\,184 - n$ data points were used as the testing data
-sets. This procedure resulted in $3\,750$ pseudo data sets ($25$ maps
+sets. This procedure resulted in $3\,750$ simulated data sets ($25$ maps
 $\times 25$ subsets $\times 6$ sample sizes). SEF were calculated from each
-training pseudo-data set using each of the seven DWF, for a grand total sample
-size of $26\,250$ ($3\,750 \times 7$) trials. Simulations results were analyzed
-on the predictions quality factor $Q$, which the log ratio of the mean square
-deviation $MSD$ and the mean squared error $MSE$, whereas the coefficient of
-prediction ($P^2$) was used to display the results (see Appendix I –
-Calculations on the simulation results for details).
+training simulated data set using each of the seven DWF, for a grand total
+sample size of $26\,250$ ($3\,750 \times 7$) trials. For each of these trials, a
+**DEoptim** global search for estimating parameter values for $d_{max}$ and
+$\alpha$ minimizing the $MSE$ was carried out using the default population size
+and $50$ generations (lower than the default in order to mitigate computational
+time given the large number of simulations). Values of the lower and upper
+bounds for $d_{max}$ were $1$ and $1\,000$, respectively, whereas the ones for
+$\alpha$ were $0.25$ and $1.75$, respectively.
+
+Simulations results were analyzed on the basis of the predictions quality factor
+$Q$, which the log ratio of the mean square deviation $MSD$ and the mean squared
+error $MSE$, whereas the coefficient of prediction ($P^2$) was used to display
+the results (see Appendix I -- Calculations on the simulation results, for a
+justification of using $Q$ and for $P^2$ and details on their calculation).
 
 Simulation results were analyzed using the analysis of variance (ANOVA). Two
 such analyses were performed. A first ANOVA was carried out on all $26\,250$
@@ -546,9 +484,9 @@ trials using four variables, one quantitative: the base-10 logarithm of the
 sample size ($\log_{10} n$), and three qualitative (or factors): $DWF$, $Map$,
 and $Sample$, as well as their six second-order interaction and four
 third-interaction terms. A second restrained ANOVA was performed on the subset
-of the best-DWF trial for each of the $3\,750$ pseudo-data sets. The latter was
-a three-variable design with variables: $\log_{10} n$, $Map$, and $Sample$, and
-their four second-order and single third-order interaction terms.
+of the best-DWF trial for each of the $3\,750$ simulated data sets. The latter
+was a three-variable design with variables: $\log_{10} n$, $Map$, and $Sample$,
+and their four second-order and single third-order interaction terms.
 
 ## Application example
 
@@ -556,28 +494,32 @@ their four second-order and single third-order interaction terms.
 
 The SEF prediction approach described in the present study was applied to a
 well-studied data example. The chosen data set involves the distribution of $35$
-taxa of Oribatid mite (class: Arachnida) in a peat bog mat located on the border
-of Lac Geai, a small lake located on the territory of the « Station de Biologie
-des Laurentides, Université de Montréal », in the conurbation of St. Hippolyte,
+taxa of Oribatid mite (class: Arachnida) in a peat bog mat located on the shore
+of Lac Geai, a small lake located on the territory of « Station de Biologie des
+Laurentides, Université de Montréal », in the conurbation of St. Hippolyte,
 Quebec, Canada. This data set was first described by @borcard_environmental_1994
-and various versions of it are available, notably from `R` packages **ade4**
-(`oribatid`), **codep** (`mite`), and **vegan** (`mite`) as well as from
-@borcard_numerical_2018. Sampling was carried out in June of 1989.
+and various copies are available, notably from `R` packages **ade4**
+(`oribatid`), **codep** (`mite`), and **vegan** (`mite`) as well as from the
+@borcard_numerical_2018 book. Sampling was carried out in June of 1989.
 
 The sampling area was $10\,\mathrm{m}$ long by $2.6\,\mathrm{m}$ wide, with the
-length oriented along an axis stretching from the forest to the open water of
-the lake. The coordinates of its centre were approximately ($45.995485$,
-$-73.993696$). Further details on the lake, its water, and its surroundings can
-be obtained from the @borcard_environmental_1994 paper.
+long axis stretching from the forest to the open water of the lake. The
+coordinates of its centre were approximately ($45.99549$, $-73.99370$). Further
+details on the lake, its water, and its surroundings are found in
+@borcard_environmental_1994.
 
 Core samples of peat were taken and the Oribatid mites inhabiting them were
 extracted, sorted, identified, and classified into $35$ morphospecies and
 genera. These taxa are chiefly based on morphology, since relatively little was
-known about the ecology and physiology of these small animals. In addition to
-the Oribatid mite counts by species, the data set includes six quantitative
-variables, namely, (1) the substrate density (quantitative; the mass of an
-unpacked volume dry substrate, $\mathrm{g \cdot L^{-1}}$), (2) the water content
-(quantitative; the mass of water by volume of wet substrate,
+known about the ecology and physiology of these small animals. The Oribatid
+community structure was analyzed using a principal component analysis (PCA) of
+the Hellinger-transformed abundance data [@legendre_ecologically_2001], keeping
+the first two principal components.
+
+In addition to the Oribatid mite counts by species, the data set includes six
+environmental predictors, namely, (1) the substrate density (quantitative; the
+mass of an unpacked volume dry substrate, $\mathrm{g \cdot L^{-1}}$), (2) the
+water content (quantitative; the mass of water by volume of wet substrate,
 $\mathrm{g \cdot L^{-1}}$), (3) the substrate type (qualitative; represented by
 six non mutually exclusive binary-coded classes: « Sphagn1 », « Sphagn2 »,
 « Sphagn3 », « Sphagn4 », « Litter », « Bare peat »), shrub density
@@ -602,15 +544,22 @@ Two continuous environmental variables, namely substrate density and water
 content, were not available from geographic information layers, but measurements
 had been taken at the sampling point locations. To be able to use them for
 predicting the density of the different mite species at any location over the
-sampling area, a map of these variables was needed. We took this need as an
-opportunity to illustrate single-variable prediction using SEF exclusively. We
-began be generating a point grid over the sampling area with a resolution of
-$5\,\mathrm{cm}$. This grid was used as a basis for generating GIS rasters for
-the different variables involved in this example. Variables substrate density
-and water content were modelled using an $L_1$-regularized (LASSO) linear
-regression model calculated using `R` package **glmnet** [@Friedman2010GlmNet]
-using the Gaussian family of Generalized Linear Models (GLM) and predicted
-values were computed over the grid points.
+sampling area, a continuous map of these variables was needed. We took this need
+as an opportunity to illustrate single-variable prediction using SEF
+exclusively. We began be generating a point grid over the sampling area with a
+resolution of $5\,\mathrm{cm}$. This grid was used as a basis for generating GIS
+rasters for the different variables involved in this example. Variables
+substrate density and water content were modelled using an $L_1$-regularized
+(LASSO) linear regression model calculated using `R` package **glmnet**
+[@Friedman2010GlmNet] using the Gaussian family of Generalized Linear Models
+(GLM) and predicted values were computed over the grid points. Values of
+parameters $d_{max}$ and $\alpha$ were estimated by **DEoptim** (default
+parameters), using $d_{max}$ values between $1$ and $5\,\mathrm{m}$ and $\alpha$
+values between $0.15$ and $1.85$. Seven cross-validation folds were used for
+estimating the predictive power. Assignment to cross-validation folds was
+carried out in a systematic manner following the order in which the data appear
+in the data set by selecting data points with indices $i + 7*j$ where $i$ is the
+cross-validation fold ($1$--$7$) and $j = 0, 1, 2, ..., 9$.
 
 Variables *substrate type*, *shrub density*, *topography*, and *flooded* were
 available directly from the polygon geometries. Variable *substrate type* was a
@@ -619,64 +568,26 @@ been taken at the boundaries of areas with different substrates in order to
 study ecological transitions. Therefore, this variable was available as a
 six-column matrix of binary (or dummy) variables rather than as a single factor
 with mutually exclusive levels. Each element of that binary matrix was divided
-by the sum of the row to which in pertained in order to make all the rows of the
-resulting transformed matrix sum to $1$. This treatment made the effects of the
-substrate types additive. Variable *shrub density* was semi-quantitative and
-treated using polynomial contrasts, whereas variable *topography*, which has two
-levels was transformed into a binary variable and centred to a mean value of
-$0$. Finally, variable *flooded* was used as is.
+by the sum of the row in order to make all the rows of the resulting transformed
+matrix sum to $1$. This treatment made the effects of the substrate types
+additive. Variable *shrub density* was semi-quantitative and treated using
+polynomial contrasts, whereas variable *topography*, which has two levels was
+transformed into a binary variable and centred to a mean value of $0$. Finally,
+variable *flooded* was used as is.
 
 We modelled species distributions from the individual count data using a
 Poisson-family $L_1$-regularized multivariate generalized regression model
 (GLM), which was also calculated using the `R` package **glmnet**
-[@Friedman2010GlmNet,@Tay2023GlmNet]. We used customized `R` language code to
+[@Friedman2010GlmNet; @Tay2023GlmNet]. We used customized `R` language code to
 allow **glmnet** to handle a multivariate response (i.e., the 35 mite species)
 since the package does not support multivariate models natively. The model's
 quality of fit was estimated separately for each species using the
 likelihood-based $R^2$ coefficient for the Poisson-family of GLM proposed by
-@guenard_modelling_2017.
-
-Finally, we generated a map of the local contributions to $\beta$-diversity
-(*LCBD*) calculated on the basis of the $35$ mite species following the approach
-described in @legendre_beta_2013. We used the Hellinger distance as a basis for
-this assessment, which entails transforming the predicted count estimates using
-the relevant function described in @legendre_ecologically_2001. That
-transformation is also available in function `decostand`\` of the **vegan**
-package in R. We performed the calculations on the basis of the predictions at
-the $70$ sampling sites: for each grid point, we first computed the predicted
-species counts minus the means of the predicted species counts over all sampling
-sites; these values were squared and summed, and the resulting sum of square was
-divided by the total sum of squares for all sampling sites, to obtained the
-*LCBD* index of the grid point.
-
-We compared *LCBD* values calculated from the observed and predicted mite
-species counts using a power relationship (i.e., $y=\alpha x^\beta$, where $y$
-is the *LCBD* based on predicted counts, $x$ is the *LCBD* based on observed
-counts), which was estimated using a regression analysis of the
-$\log_{10}$-transformed *LCBD* values. Parameter $\alpha$ was estimated as
-$\log_{10}\alpha$ , whereas parameter $\beta$ was estimated directly as the
-slope of the relationship. Hypothesis testing was performed for the existence of
-a relationship between the *LCBD* values ($H_0$: $\beta = 0$) followed by tests
-about the value of $\alpha$ ($H_0$: $\log_{10} \alpha = 0$, which is equivalent
-to $H_0$: $\alpha = 1$) and slope values ($H_0$: $\beta = 1$). All hypothesis
-tests were performed against two-tailed alternative hypotheses.
+@guenard_modelling_2017. Values of parameters $d_{max}$ and $\alpha$ were
+estimated by **DEoptim** under identical conditions as for the aforementioned
+substrate density and water content models.
 
 # Results
-
-## Shape and smoothness analysis
-
-The different DWF generated SEF with different shapes, with the general
-properties of one-dimensional SEF being also observed for the two-dimensional
-SEF (Table `r tableCounter$getNumber("dwf_smooth")`; Appendix I). With the
-exception of the Gaussian and hole effect DWF, the SEF are either discontinuous
-(i.e., the power DWF) or involve slope discontinuities (i.e., the linear,
-hyperbolic, spherical, exponential DWF). These slope discontinuities were
-located at the sampling points for equidistant transects and plots. In the case
-of the linear, spherical DWF, SEF slope discontinuities also occurred sometimes
-between the sampling points. The Gaussian and hole effect DWF both yielded
-sinusoidal SEF, but with different shapes. Their first three derivatives were
-also sinusoidal with the same period, but different phases. These two DWF are
-thus the ones yielding the smoothest SEF.
 
 ## Simulations
 
@@ -685,29 +596,29 @@ load(file="Data/sim_AOV_tab.rda")
 ```
 
 The analysis of variance computed over all simulation results reveals that
-$Q_{pred}$ was firstly affected by the sample size of the training set
+$Q_{pred}$ was most affected by the sample size of the training set
 ($\log_{10}n$, Table `r tableCounter$getNumber("aov_tab1")`). This result was
 expected; it is well know that the potential of a model at generalizing its
 target data is a function of the sample size of its training data, as it is a
 consequence of Hoeffding's inequality [@hoeffding_probability_1963]. The second
-most important factor was $Map$, which showed that the various maps generated
-for the simulation had various predictability for spatial modelling. The third
-factor was $DWF$ (Fig. `r figCounter$getNumber("res_dwf")`), followed by
-$Sample$. The marginal effects of these factors were all statistically
-significant. All but one of the second-order interaction terms were also
-statistically significant, the notable exception being interaction term
-$DWF \times Sample$: the effect of $DWF$ was similar among the samples. All
-second order interaction terms involving $\log_{10}n$ and $Map$ were
-statistically significant. Two of the four third-order interaction terms were
-statistically significant: interaction term $\log_{10}n \times DWF \times Map$,
-indicating that the manner by which $\log_{10}n$ affects $Q_{pred}$ varies among
-various DWF-Map combinations, and interaction term
-$\log_{10}n \times Map \times Sample$, indicating that the effect of
-$\log_{10}n$ is also modulated in various ways among the Map-Sample
+most important factor was $Map$, which showed that maps generated during the
+simulation had various levels of predictability by spatial modelling. The third
+factor was $DWF$, followed by $Sample$ (see Appendix III -- Figures AIII 1--3
+for details on these results). The marginal effects of these factors were all
+statistically significant. All but one of the second-order interaction terms
+were also statistically significant, the notable exception being interaction
+term $DWF \times Sample$. All second order interaction terms involving
+$\log_{10}n$ and $Map$ were statistically significant. Two of the four
+third-order interaction terms were statistically significant: interaction term
+$\log_{10}n \times DWF \times Map$, indicating that the manner by which
+$\log_{10}n$ affects $Q_{pred}$ varies among various DWF-Map combinations, and
+interaction term $\log_{10}n \times Map \times Sample$, indicating that the
+effect of $\log_{10}n$ is also modulated in various ways among the Map-Sample
 combinations.
 
 ```{r, echo = FALSE}
 NPred <- readRDS("Data/NPred.rds")
+QPred <- -log10(1 - NPred)
 dwf <- readRDS("Data/bestDwf.rds")
 dwfPC <- round(100*dwf/sum(dwf),1)
 ```
@@ -721,27 +632,32 @@ spherical ($`r dwf[6L]`$, $`r dwfPC[6L]`\%$), and, finally, the linear DWF
 ($`r dwf[7L]`$, $`r dwfPC[7L]`\%$). During the simulations, the $Q_{pred}$ of
 the best-DWF models was also mainly affected by the sample size
 (Table `r tableCounter$getNumber("aov_tab2")`). The mean $P^2$ was
-`r round(NPred[1L,1L],4)` when $n = 10$, and increased to
-`r round(NPred[2L,1L],4)` when $n = 20$, to `r round(NPred[3L,1L],4)` when
-$n = 50$, to `r round(NPred[4L,1L],4)` when $n = 100$, to
-`r round(NPred[5L,1L],4)` when $n = 200$, and finally to
-`r round(NPred[6L,1L],4)` when $n = 500$.
+`r round(NPred[1L,1L],4)` when $n = 10$
+($Q_{pred} = `r round(QPred[1L,1L],4)`$), and increased to
+`r round(NPred[2L,1L],4)` when $n = 20$
+($Q_{pred} = `r round(QPred[2L,1L],4)`$), to `r round(NPred[3L,1L],4)` when
+$n = 50$ ($Q_{pred} = `r round(QPred[3L,1L],4)`$), to `r round(NPred[4L,1L],4)`
+when $n = 100$ ($Q_{pred} = `r round(QPred[4L,1L],4)`$), to
+`r round(NPred[5L,1L],4)` when $n = 200$
+($Q_{pred} = `r round(QPred[5L,1L],4)`$), and finally to
+`r round(NPred[6L,1L],4)` when $n = 500$
+($Q_{pred} = `r round(QPred[6L,1L],4)`$).
 
 The $Q_{pred}$ of the best-DWF models also varied among the maps and, but to a
 much lesser extent, among the subsets. The significant among-map variation in
 the $Q_{pred}$ entails that some of the maps are more or less predictable than
 others as a consequence of their random origin from sets of sporadically spread
-initial points (Fig. `r figCounter$getNumber("res_map")`). Interaction term
-$\log_{10}n \times Map$ was also statistically significant, indicating that an
-increase in the size of the training sample improves predictions for some of the
-maps more than for some others.
+initial points (See appendix III -- Supplementary figures -- Simulation
+results). Interaction term $\log_{10}n \times Map$ was also statistically
+significant, indicating that an increase in the size of the training sample
+improves predictions for some of the maps more than for some others.
 
 The among-sample variation of the $Q_{pred}$ was smaller than that of $Map$, and
-interaction term $\log_{10}n \times Sample$ was also significant
-(Fig. `r figCounter$getNumber("res_subset")`). It thus appears that some of the
-randomly-generated training samples were more suitable than some others to
-properly sample the maps, and that this suitability was increased in different
-ways as the sample size was increased.
+interaction term $\log_{10}n \times Sample$ was also significant (See
+appendix III -- Supplementary figures -- Simulation results). It thus appears
+that some of the randomly-generated training samples were more suitable than
+some others to properly sample the maps, and that this suitability was increased
+in different ways as the sample size was increased.
 
 Finally, interaction terms $Map \times Sample$ and
 $\log_{10}n \times Map \times Sample$ were also statistically significant,
@@ -752,72 +668,58 @@ different ways with increasing training sample size.
 ## Oribatid mite example
 
 The best subordinate model predicting substrate density was found to use the
-power DWF (Eq. \ref{eq4}) with a range of $d_{max} = 1.14\,\mathrm{m}$ and a
+power DWF (Appendix Eq. A2) with a range of $d_{max} = 1.14\,\mathrm{m}$ and a
 shape parameter value of $\alpha = 0.67$. This model was made of six SEF; the
 square root of the mean squared error (*RMS*) was $11.3\,\mathrm{g~L^{-1}}$
-($P^2 = 0.088$; Figure `r figCounter$getNumber("res_SubsWatr")`). For the water
-content model, the best DWF was the Gaussian DWF (Eq. T2 3 from
+($P^2 = 0.088$; Figure `r figCounter$getNumber("res_SubsWatr")`). This model was
+thus only slightly better than taking the mean value substrate density
+($39.28\,\mathrm{g~L^{-1}}$) as the predicted value. For the water content
+model, the best DWF was the Gaussian DWF (Eq. T2 3 from
 Table `r tableCounter$getNumber("dwf_tab2")`) with a range of
 $d_{max} = 1.12\,\mathrm{m}$, comprising $11$ SEF; the *RMSE* was
 $122.5\,\mathrm{g~L^{-1}}$ ($P^2 = 0.25$).
 
 The best DWF for predicting Oribatid mite species distribution was the power DWF
-(Eq. \ref{eq4}), with a range of $d_{max} = 2.34\,\mathrm{m}$, a shape parameter
-value of $\alpha = 1.68$, and deviance value ($-2\log L$) of $4.137$. The
-model's likelihood-based $R^2$ varied from $0.073$ for species « Hyporufu » to
-$0.878$ for species « Limncfci » (median: $0.548$; Appendix II Table A-II 1,
-Figure `r figCounter$getNumber("res_Oribatids")`). The ability of the model to
-predict mite species counts was proportional to the mean abundance of the
-species in the sampling area ($F_{1,33} = 18.32$, $P < 0.001$; with
-log-transformed mean abundance and predictability estimated as
+(Appendix Eq. A2), with a range of $d_{max} = 2.34\,\mathrm{m}$, a shape
+parameter value of $\alpha = 1.68$, and deviance value ($-2\log L$) of $4.137$.
+The model's likelihood-based $R^2$ varied from $0.073$ for species *Hyporufu* to
+$0.878$ for species *Limncfci* (median: $0.548$; Appendix II Table A-II 1). The
+ability of the model to predict mite species counts was proportional to the mean
+abundance of the species in the sampling area ($F_{1,33} = 18.32$, $P < 0.001$;
+with log-transformed mean abundance and predictability estimated as
 $Q = -\log_{10} (1 - R^2)$). For instance, the expected $R^2$ is $0.357$ for a
 mean count of $0.157~\mathrm{ind.~core^{-1}}$ (the minimum value observed),
 $0.574$ for a mean count of $1~\mathrm{ind.~core^{-1}}$, $0.745$ for a mean
 count of $10~\mathrm{ind.~core^{-1}}$, and $0.807$ for a mean count of
 $35.26~\mathrm{ind.~core^{-1}}$ (the maximum value observed). Also consistent
-with this result is the observation, from
-Figure `r figCounter$getNumber("res_Oribatids")`, that species absent from a
-large number of sites (e.g., Hyporufu, which is absent from $60$ of the $70$
-sites) tend to have a small $R^2$ compared to species present in many sites
-(e.g., Limncfci, which is absent from only $15$ of the $70$ sites). This subject
-will be talked over in the discussion.
+with this result is the observation that species absent from a large number of
+sites (e.g., *Hyporufu*, which is absent from $60$ of the $70$ sites) tend to
+have a small $R^2$ compared to species present in many sites (e.g., *Limncfci*,
+which is absent from only $15$ of the $70$ sites).
 
-The total Oribatid mite $\beta$-diversity was $0.394$ and the local
-contributions, quantified with *LCBD* index, varied between $0.00574$ and
-$0.0307$ (median: $0.0136$) when calculated using the observed species counts,
-and between $0.00330$ and $0.0493$ (median: $0.0136$) when calculated using the
-model's fitted values (i.e., the estimated count values at the sampling
-locations). Species contributions to $\beta$-diversity, quantified using the
-*SCBD* index, varied between $0.000521$ and $0.238$ (median: $0.00995$; from
-observed species counts).
+### Community structure
 
-The power relationship between the *LCBD* obtained using the observed mite
-species counts and the ones obtained using the predicted mite species counts was
-statistically significant ($P < 0.000\,1$), with the parametric values for both
-$\alpha$ and $\beta$ not being statistically different from $1$ ($P = 0.344$,
-and $P = 0.287$, respectively, with two-sided tests;
-Figure `r figCounter$getNumber("res_LCBD")`). This result indicates the absence
-of a large discrepancy between the *LCBD* estimates, and that the predicted
-species densities can be used to estimate $\beta$-diversity, and thus identify
-areas with the high and low uniqueness in term of their species content.
+The two axes of the PCA carried out on the transformed species composition
+matrix accounted for approximately $25\%$ of the variance of the data matrix
+(Figure `r figCounter$getNumber("Oribatid_map")`). The first PCA axis was driven
+chiefly by the preponderance of *Tectvela* *Oppiniva*, and *Suctobsp*, which are
+associated with negative loading, with respect to that of *Limncfci*,
+*Limncfru*, and, to a lesser extent, *Trhyposp* and *Trimalsp*, which are
+associated with positive loading. The second PCA axis was driven by the
+preponderance of *Limncfru*, *Hoplcfpa*, and *Suctobsp*, which are associated
+with negative loading, with respect to that of *Limncfci*, *Trhyposp*, and
+*Tectvela*, which are associated with positive loading.
 
-Predicted mite $\beta$-diversity varied between $0.00267$ and $0.0381$ (median:
-$0.0127$) throughout the prediction grid
-(Figure `r figCounter$getNumber("res_diversity")`). This modelling exercise
-shows that the study area features zones of high and low diversities. The
-highest $\beta$-diversity (and thus uniqueness) were predicted in the two
-flooded areas, which are located around coordinates $(0.2,8.0)$ and
-$(2.5, 9.0)$, in the bare peat area located near $(0.5,6.0)$, and in the hummock
-area located around $(1.2,2.5)$. The lowest beta diversity values were predicted
-in the middle of the area, at $X$ coordinates between $4.2$ and $5.7$ and $Y$
-coordinates between $0.0$ and $2.1$. Besides the binary descriptor « flooded »,
-there is not obvious relationship between $\beta$-diversity and single
-environmental variables. Areas of both high and low beta diversities were
-observed for the different substrates, shrub abundance levels, and topography
-types. Environmental variables thus appear to have intervened in various ways,
-together with the spatial structures modelled using the pMEM eigenfunctions, on
-the distribution of the different species, thereby indirectly influencing the
-degree uniqueness of the sites.
+The components of the Oribatid community structure described by the PCA axes
+followed their own particular distribution spatial patterns
+(Figure `r figCounter$getNumber("res_Oribatids")`). For the first PCA axis,
+large negative values were observed close to the forest line, at a distance of
+approximately $1\,\mathrm{m}$ from the lower end of the plot, whereas large
+positive values were observed near the waterline at a distance of approximately
+$1\,\mathrm{m}$ from it. The most extreme values of the second PCA axis
+(positive) were observed close the the forest and in and around the flooded
+areas. Negative second PCA axis loading values were observed on the right of the
+map at around a third of the distance from the waterline and forest line.
 
 # Discussion
 
@@ -827,41 +729,49 @@ arbitrary locations about sampling points bearing known values. This goal is
 similar to that of common spatial interpolation methods such as kriging.
 However, whereas interpolation methods are non-parametric and thus based on the
 direct involvement of the data points, pMEM is a parametric method involving
-descriptors. That property entails that pMEM is a method that does not provide
-direct estimates of the variable it seeks to estimate. Instead, it provides
-descriptors, in the form of SEF, to be used later during analyses and model
-development. These descriptors are usable as is (e.g., when predicting substrate
-density or water content in the mite example) or in combination with additional
-descriptors (e.g., when predicting Oribatid mite species distributions in our
-example). Furthermore, any suitable model estimation approach can be used during
-the subsequent steps of the modelling workflow (e.g., an $L_1$ regularized
-generalized linear model in the oribatid mite examples). Besides the more common
-linear model estimation methods such as the one we used in the example,
-alternative machine learning methods can also be used. These methods include
-regression trees, gradient boosted trees [@mason_boosting_1999;
-@chen_xgboost_2016], Bayesian additive regression trees [@chipman_bart_2010],
-support vector machines [@cortes_support-vector_1995], artificial neural
-networks [@Goodfellow-et-al-2016], among others. In machine learning parlance,
-pMEM is referred to as a « feature engineering » approach [@chollet_deep_2018].
-This preliminary step involves the introduction of a numerical representation of
-the spatial coordinates in the model, in the form of latent variables. The
-addition of this numerical representation helps the model in modelling the
-response(s) on the basis of estimated spatial variation patterns.
+explanatory descriptors. That property entails that pMEM is a method that does
+not provide direct interpolation estimates of the variable it seeks to estimate.
+Instead, it provides descriptors, in the form of SEF, to be used later during
+analyses and model development. These descriptors are usable as is (e.g., when
+predicting substrate density or water content in the mite example) or in
+combination with additional descriptors (e.g., when predicting Oribatid mite
+species distributions in our example). Furthermore, any suitable model
+estimation approach can be used during the subsequent steps of the modelling
+workflow (e.g., an $L_1$ regularized generalized linear model in the oribatid
+mite examples). Besides the more common linear model estimation methods such as
+the one we used in the example, alternative machine learning methods can also be
+used. These methods include regression trees, gradient boosted trees
+[@mason_boosting_1999; @chen_xgboost_2016], Bayesian additive regression trees
+[@chipman_bart_2010], support vector machines [@cortes_support-vector_1995],
+artificial neural networks [@Goodfellow-et-al-2016], among others. In machine
+learning parlance, pMEM is referred to as a « feature engineering » approach
+[@chollet_deep_2018]. This preliminary step involves the introduction of a
+numerical representation of the spatial coordinates in the model, in the form of
+latent variables. The addition of this numerical representation helps the model
+in modelling the response(s) on the basis of estimated spatial variation
+patterns.
 
-We found that the shape and level of smoothness of the spatial variation
-patterns represented by the SEF was heavily dependent on the chosen SWF and, but
-to a lesser extent, its parameter value(s). The SEF coming from all the DWF
-(except the power DWF) were minimally $C_1$ continuous. The Gaussian DWF and the
-hole effect DWF produced sinusoidal SEF, which are at least $C_3$ continuous.
+Since pMEM involve descriptors, error estimation on the predictions is handled
+by the method that uses them for modelling. For instance, the handling of
+prediction error is well-established for multiple linear regression (but see
+Zhang [-@zhang_estimation_1993] for a caveat on using that approach). At the
+price of more computational power, cross-validation or other random sampling
+approaches (e.g., bootstrap, jackknife) can be used to obtain numerical
+estimates of the prediction error for virtually any modelling method. The
+details about the estimation of prediction error belongs to the particular
+method using the pMEM eigenfunctions and are thus outside the scope of the
+present study.
+
 The simulation study we performed indicates that any of the DWF may at times
-yield sets of SEF that were the most appropriate to model the pseudo-data, which
-were samples from two-dimensional maps generated by Brownian motion simulations.
-When applied to real data, the three models built involved SEF from two DWF: the
-power DWF and the Gaussian DWF. These observations indicate that SEF with
-different orders of continuity may be equally suitable for spatial modelling and
-that having multiple DWF is a beneficial aspect of the pMEM toolbox, as it is
-presently developed. Actually, other DWF besides the ones described in the
-present study may be proposed in future developments of the pMEM method.
+yield sets of SEF that were the most appropriate to model the simulated data,
+which were samples from two-dimensional maps generated by Brownian motion
+simulations. When applied to real data, the three models built involved SEF from
+two DWF: the power DWF and the Gaussian DWF. These observations indicate that
+SEF with different orders of continuity may be equally suitable for spatial
+modelling and that having multiple DWF is a beneficial aspect of the pMEM
+toolbox, as it is presently developed. Actually, other DWF besides the ones
+described in the present study may be proposed in future developments of the
+pMEM method.
 
 Simulation results indicated that pMEM were able to model and predict spatially
 structured variables with various degrees of success, depending primarily on the
@@ -906,22 +816,44 @@ statistically significant differences between the Oribatid mite
 $\beta$-diversity, in terms of the total $\beta$-diversity and *LCBD* indices,
 calculated from the observed and the predicted species frequencies.
 
-Whereas the exemplary data set we used had a modest sample size by contemporary
-standards, pMEM analysis can be used with data sets with larger sample sizes and
-different types of response variables, e.g., presence-absence data. For larger
-data sets, perhaps in the thousands of observations, one may contemplate the use
-of potentially more powerful modelling methods. Whereas on the upside, using
-larger data sets may bring about the potential to obtain more powerful models,
-on the downside, holding a very large square matrix in memory and performing
-eigenvalue decomposition on it may not be practical. A solution to that issue,
-which is beyond the scope of the present paper, may be to base the calculation
-of the SEF on a set of representative kernels. These representative kernels may
-be a subset of the locations (i.e., medoids), or centroids obtained from a
-clustering algorithm [$k$-means on the spatial coordinates or
-spatially-constrained clustering, @murtagh_survey_1985;
-@legendre_constrained_1987; @guenard_hierarchical_2022]. The calculations to
-perform such an analysis may be developed as a further development from the
-present study.
+The computation of the pMEM relies on square matrices for storing distances and
+the weights and on eigenvalue decomposition, which is a computationally
+demanding method. While it is not a problem for small data sets such as the ones
+shown in the present study, requirements in term of computer memory storage and
+computation time become prohibitive on large data set (a few thousand data
+points) even for state of the art computer systems. A straightforward solution
+to adapting pMEM to large data set would be to consider using the pairwise
+distances between the $n$ data points and a set of $k$ representative spatial
+kernels disseminated over the study area. The resulting $n \times k$ rectangular
+distance matrix could be transformed into a spatial weights matrix, submitted to
+centering and then to singular value decomposition (SVD). By choosing a
+parsimonious number of kernels, the kernel-based pMEM thus obtained would remain
+applicable to large data sets (in the tens or hundreds of thousand of data
+points). Given that $k$ would be much smaller than $n$, the number of SEF would
+be equal to $k$ (or, perhaps, slightly smaller). This property might also help
+in simplifying model building to some extent. That proposal opens other matters
+that we did not have to ponder with while studying pMEM. For instance, the
+approach for choosing the number of kernels and their locations would have to be
+considered (e.g., using medoids *vs* centroids). Also, the linear algebra
+linking the Moran's I index to the SEF thus defined would need to be
+demonstrated, since that link is helpful in interpreting the spatial scale
+associated with the SEF. These matters, and possibly other unanticipated matters
+that may likely spring up while developing kernel-based pMEM, are clearly beyond
+the scope of the present study.
+
+The pMEM framework may be useful for other purposes besides our resolutely
+machine-learning oriented objective of using it for making spatially-explicit
+predictions. For instance, one may consider using it to correct the confounding
+effect of spatial autocorrelation when carrying out statistical inference
+testing. However, it is worth recalling that pMEM are identical to MEM when only
+considering the sampling points. To what extent the four variogram-based DWF we
+introduced would improve MEM performance in correcting spatial confounding will
+remain an unanswered questions until a thorough simulation study addressing that
+matter is carried out. In the meantime, we consider it safer to assume that
+actual knowledge about spatial confounding still holds, and thus would direct
+the reader to the competent literature on that particular subject matter
+[@Thaden_Structural_2018; @Dupont_Spatial_2022; @Marques_Mitigating_2022;
+@Makinen_Spatial_2022].
 
 We are hoping that the findings highlighted in the present study will entice
 scientists to use pMEM to model spatial variation and for making predictions.
@@ -933,19 +865,12 @@ implementation of the approaches to other computer languages and software.
 
 We declare no conflict of interest.
 
-# Statement of inclusion
-
-Our study is concerned with methodological development, and thus involved no
-local data collection. The pre-existing data set used as an application example
-in the present paper originated from the same region as the authors and was
-collected during a previous collaboration with a researcher from Switzerland.
-
 # Data availability
 
-An R package called pMEM and all the data used for this study (SEF smoothness
-analysis, computer simulations, example calculations, Appendices) are available
-through the following
-[anonymous.4open.science link](https://anonymous.4open.science/r/pMEM-archive-60A1).
+An R package called pMEM and all the data used for this study (computer
+simulations, example calculations, Appendices) are available through the
+following [anonymous.4open.science
+link](https://anonymous.4open.science/r/pMEM-archive-60A1).
 
 \pagebreak
 
@@ -976,36 +901,6 @@ figCounter$getCaption("Oribatid_map")
 
 \pagebreak
 
-![](Image/Simulations-function.png)
-
-```{r, echo=FALSE, results='asis'}
-figCounter$getCaption("res_dwf")
-```
-
---------------------------------------------------------------------------------
-
-\pagebreak
-
-![](Image/Simulations-map.png)
-
-```{r, echo=FALSE, results='asis'}
-figCounter$getCaption("res_map")
-```
-
---------------------------------------------------------------------------------
-
-\pagebreak
-
-![](Image/Simulations-subset.png)
-
-```{r, echo=FALSE, results='asis'}
-figCounter$getCaption("res_subset")
-```
-
---------------------------------------------------------------------------------
-
-\pagebreak
-
 ![](Image/SubsWatr.png)
 
 ```{r, echo=FALSE, results='asis'}
@@ -1016,7 +911,7 @@ figCounter$getCaption("res_SubsWatr")
 
 \pagebreak
 
-![](Image/Oribatid_predictions-power.png)
+![](Image/Oribatid_PCA_power.png)
 
 ```{r, echo=FALSE, results='asis'}
 figCounter$getCaption("res_Oribatids")
@@ -1026,35 +921,22 @@ figCounter$getCaption("res_Oribatids")
 
 \pagebreak
 
-![](Image/Oribatid_LCBD.png)
-
-```{r, echo=FALSE, results='asis'}
-figCounter$getCaption("res_LCBD")
-```
-
---------------------------------------------------------------------------------
-
-\pagebreak
-
-![](Image/Oribatid_Beta_power.png)
-
-```{r, echo=FALSE, results='asis'}
-figCounter$getCaption("res_diversity")
-```
-
---------------------------------------------------------------------------------
-
-\pagebreak
-
 ```{r, echo=FALSE, results='asis'}
 tableCounter$getCaption("dwf_tab")
-```
 
-| Name         | Definition                                                |        |
-|:-------------|:----------------------------------------------------------|-------:|
-| Linear       | $a_{i,j} = 1-\frac{d_{i,j}}{d_{max}}$                     | (T1 1) |
-| Concave up   | $a_{i,j} = 1-\left(\frac{d_{i,j}}{d_{max}}\right)^\alpha$ | (T1 2) |
-| Concave down | $a_{i,j} = \frac{1}{d_{i,j}^\alpha}$                      | (T1 3) |
+kable(
+  data.frame(
+    Name = c("Linear","Concave up","Concave down"),
+    Definition = c(
+      "$a_{i,j} = 1-\\frac{d_{i,j}}{d_{max}}$",
+      "$a_{i,j} = 1-\\left(\\frac{d_{i,j}}{d_{max}}\\right)^\\alpha$",
+      "$a_{i,j} = \\frac{1}{d_{i,j}^\\alpha}$"
+    ),
+    Ref = c("(T1 1)","(T1 2)","(T1 3)")
+  ),
+  align = "llr",col.names = c("Name","Definition","")
+)
+```
 
 Notes:
 
@@ -1067,45 +949,52 @@ Notes:
 
 ```{r, echo=FALSE, results='asis'}
 tableCounter$getCaption("dwf_tab2")
+
+kable(
+  data.frame(
+    Name = sprintf(
+      "$\\mathrm{%s}$",
+      c("Linear^1","Power^1","Hyperbolic^1","Spherical","Exponential","Gaussian",
+        "Hole effect")
+    ),
+    Definition = c(
+      "$w_i = \\begin{cases}
+          d_i < d_{max}, 1-\\frac{d_i}{d_{max}} \\\\
+          d_i \\geq d_{max}, 0
+         \\end{cases}$",
+      "$w_i = \\begin{cases}
+          d_i < d_{max}, 1-\\left(\\frac{d_i}{d_{max}}\\right)^\\alpha \\\\
+          d_i \\geq d_{max}, 0
+          \\end{cases}$",
+      "$w_i = \\begin{cases}
+          d < d_{max}, \\frac{\\left(1 + \\frac{d_i}{d_{max}} \\right)^{-\\alpha} - 2^{-\\alpha}}{1 - 2^{-\\alpha}} \\\\
+          d_i \\geq d_{max}, 0
+          \\end{cases}$",
+      "$w_i = \\begin{cases}
+          d_i < d_{max}, 1 - 1.5\\left(\\frac{d_i}{d_{max}}\\right) +  0.5\\left(\\frac{d_i}{d_{max}}\\right)^3 \\\\
+          d_i \\geq d_{max}, 0
+        \\end{cases}$",
+      "$w_i = \\mathrm{e}^{-\\frac{d_i}{d_{max}}}$",
+      "$w_i = \\mathrm{e}^{-\\left(\\frac{d_i}{d_{max}}\\right)^2}$",
+      "$w_i = \\begin{cases}
+          d_i = 0, 1 \\\\
+          d_i > 0, \\frac{d_{max}}{\\pi d_i}\\sin \\frac{\\pi d_i}{d_{max}}
+        \\end{cases}.$"
+    ),
+    Ref = sprintf("$\\mathrm{T2 %d}$",1:7)
+  ),
+  align = "llr",col.names = c("Name","Definition","")
+)
 ```
 
-| Name        | Definition                                                                                                                                                                                                                                                                                                                                                                                                                                          |        |
-|:-----------------|:--------------------------------------------|-----------------:|
-| spherical   | $$                                                                                                                                                                                                                                                                                                                                                                                                                                                  
-                                                                                                                                                                                                                                                                                                            w_i =                                                                                                                                                   
-                                                                                                                                                                                                                                                                                                              \begin{cases}                                                                                                                                         
-                                                                                                                                                                                                                                                                                                                d_i < d_{max}, 1 - 1.5\left(\frac{d_i}{d_{max}}\right) +  0.5\left(\frac{d_i}{d_{max}}\right)^3 \\                                                  
-                                                                                                                                                                                                                                                                                                                d_i \geq d_{max}, 0                                                                                                                                 
-                                                                                                                                                                                                                                                                                                              \end{cases}                                                                                                                                           
-                                                                                                                                                                                                                                                                                                            $$                                                                                                                                                      | (T2 1) |
-| exponential | $$w_i = \mathrm{e}^{-\frac{d_i}{d_{max}}}$$                                                                                                                                                                                                                                                                                                                                                                                                         | (T2 2) |
-| Gaussian    | $$w_i = \mathrm{e}^{-\left(\frac{d_i}{d_{max}}\right)^2}$$                                                                                                                                                                                                                                                                                                                                                                                          | (T2 3) |
-| hole effect | $$                                                                                                                                                                                                                                                                                                                                                                                                                                                  
-                                                                                                                                                                                                                                                                                                            w_i =                                                                                                                                                   
-                                                                                                                                                                                                                                                                                                              \begin{cases}                                                                                                                                         
-                                                                                                                                                                                                                                                                                                                d_i = 0, 1 \\                                                                                                                                       
-                                                                                                                                                                                                                                                                                                                d_i > 0, \frac{d_{max}}{\pi d_i}\sin \frac{\pi d_i}{d_{max}}                                                                                        
-                                                                                                                                                                                                                                                                                                              \end{cases}.                                                                                                                                          
-                                                                                                                                                                                                                                                                                                            $$                                                                                                                                                      | (T2 4) |
+**Notes:**
+
+1.  See Appendix I -- Distance weighting function derived from the MEM framework
+    for a through presentation of these three DWF.
 
 \pagebreak
 
-```{r, echo = FALSE, results='asis'}
-yaml.load_file("Data/SmoothTable.yml") -> dwf_smooth
-tableCounter$getCaption("dwf_smooth")
-dwf_smooth[1L:6L] %>%
-  as.data.frame %>%
-  kable(
-    format = "pipe",
-    col.names = c("DWF","Continuity","Nb. of SEF","Pattern","Slope change",
-                  "First derivative"),
-    align = "lccccc"
-  )
-cat("**Notes:**\n\n")
-cat(sprintf("%d. %s\n",1L:length(dwf_smooth[[7L]]), dwf_smooth[[7L]]))
-```
-
-\pagebreak
+[Move this table to the appendix on smoothness, including the table header]
 
 ```{r, echo = FALSE, results='asis'}
 tableCounter$getCaption("aov_tab1")

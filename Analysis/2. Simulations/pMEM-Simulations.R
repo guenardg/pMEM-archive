@@ -189,6 +189,7 @@ if(FALSE) {
   cbind(1,log10(c(10,20,50,100,200,500))) %*%
     coefficients(lmSim)[1L:2L] %>%
     {1 - 10^-.} -> NPred
+  ## -log10(1-NPred)
   
   dimnames(NPred) <- list(c(10,20,50,100,200,500),"Mean P")
   
@@ -225,8 +226,8 @@ if(FALSE) {
     c(10,20,50,100,200,500)
   ) -> dimnames(mapPred)
   
-  for(i in 2L:ncol(mapPred))
-    mapPred[,i] <- mapPred[,i] - rowSums(mapPred[,1L:(i - 1L),drop=FALSE])
+  ## for(i in 2L:ncol(mapPred))
+  ##   mapPred[,i] <- mapPred[,i] - rowSums(mapPred[,1L:(i - 1L),drop=FALSE])
   
   saveRDS(mapPred, "../../Data/mapPred.rds")
   
@@ -259,8 +260,8 @@ if(FALSE) {
     c(10,20,50,100,200,500)
   ) -> dimnames(samplePred)
   
-  for(i in 2L:ncol(samplePred))
-    samplePred[,i] <- samplePred[,i] - rowSums(samplePred[,1L:(i - 1L),drop=FALSE])
+  ## for(i in 2L:ncol(samplePred))
+  ##   samplePred[,i] <- samplePred[,i] - rowSums(samplePred[,1L:(i - 1L),drop=FALSE])
   
   saveRDS(samplePred, "../../Data/samplePred.rds")
   
@@ -294,9 +295,9 @@ if(FALSE) {
     c(10,20,50,100,200,500)
   ) -> dimnames(funPred)
   
-  for(i in 2L:ncol(funPred))
-    funPred[,i] <- funPred[,i] - rowSums(funPred[,1L:(i - 1L),drop=FALSE])
-  funPred %<>% .[order(rowSums(.)),]
+  ## for(i in 2L:ncol(funPred))
+  ##   funPred[,i] <- funPred[,i] - rowSums(funPred[,1L:(i - 1L),drop=FALSE])
+  ## funPred %<>% .[order(rowSums(.)),]
   
   saveRDS(funPred, "../../Data/funPred.rds")
   
@@ -317,26 +318,31 @@ if(FALSE) {
 if(FALSE) {
   
   png(file="../../Image/Simulations-map.png", width = 800, height = 400)
-  par(no.readonly = TRUE) -> safe
   par(mfrow=c(1L,1L), mar=c(3.0,4.6,1.0,4.6))
   
-  mapPred %>% rowSums %>% order -> ord
+  mapPred %>% scale(scale=FALSE) %>% svd(nu = 1L) %>% .$u %>% order -> ord
   
-  barplot(
-    height = t(mapPred)[,ord], names.arg = rownames(mapPred)[ord],
-    beside = FALSE, las = 2L, ylim = c(0,1),
-    ylab = expression(paste("Mean", ~ italic(P)^2))
-  ) -> cc
+  plot(
+    NA, xlim=c(1,length(ord)), ylim=c(-0.05,1), axes=FALSE,
+    ylab=expression(paste("Mean", ~ italic(P)^2))
+  )
+  axis(1L, 1:length(ord), labels=rownames(mapPred)[ord], las=2L)
+  axis(2L, las=2L)
+  col <- grey(seq(0.3, 0.9, length.out=ncol(mapPred)))
+  for(i in 1L:ncol(mapPred)) {
+    ## lines(x=1:length(ord), y=mapPred[ord,i])
+    points(x=1:length(ord), y=mapPred[ord,i], pch=22L, bg=col[i], cex=2.5)
+  }
   
   legend(
-    x = tail(cc,1L) + 0.75, y = 0.7, pch=22L, xpd=TRUE, pt.cex=2, box.lwd = 0,
+    x = length(ord) + 0.75, y = 0.7, pch=22L, xpd=TRUE, pt.cex=2, box.lwd = 0,
     legend = parse(text=sprintf("italic(n) == %s",c(500,200,100,50,20,10))),
-    pt.bg = rev(grey(seq(0.3,0.9,length.out=6)))
+    pt.bg = rev(col)
   )
   
   dev.off()
   
-  rm(safe,ord,cc)
+  rm(ord,i,col)
   
 }
 
@@ -344,26 +350,31 @@ if(FALSE) {
 if(FALSE) {
   
   png(file="../../Image/Simulations-subset.png", width = 800, height = 400)
-  par(no.readonly = TRUE) -> safe
   par(mfrow=c(1L,1L), mar=c(3.0,4.6,2.0,4.6))
   
-  samplePred %>% rowSums %>% order -> ord
+  samplePred %>% scale(scale=FALSE) %>% svd(nu = 1L) %>% .$u %>% order -> ord
   
-  barplot(
-    height = t(samplePred)[,ord], names.arg = rownames(samplePred)[ord],
-    beside = FALSE, las = 2L, ylim = c(0,1), main = "Subset",
-    ylab = expression(paste("Mean", ~ italic(P)^2))
-  ) -> cc
+  plot(
+    NA, xlim=c(1,length(ord)), ylim=c(-0.05,1), axes=FALSE,
+    ylab=expression(paste("Mean", ~ italic(P)^2))
+  )
+  axis(1L, 1:length(ord), labels=rownames(samplePred)[ord], las=2L)
+  axis(2L, las=2L)
+  col <- grey(seq(0.3, 0.9, length.out=ncol(samplePred)))
+  for(i in 1L:ncol(samplePred)) {
+    ## lines(x=1:length(ord), y=samplePred[ord,i])
+    points(x=1:length(ord), y=samplePred[ord,i], pch=22L, bg=col[i], cex=2.5)
+  }
   
   legend(
-    x = tail(cc,1L) + 0.75, y = 0.7, pch=22L, xpd=TRUE, pt.cex=2, box.lwd = 0,
+    x = length(ord) + 0.75, y = 0.7, pch=22L, xpd=TRUE, pt.cex=2, box.lwd = 0,
     legend = parse(text=sprintf("italic(n) == %s",c(500,200,100,50,20,10))),
-    pt.bg = rev(grey(seq(0.3,0.9,length.out=6)))
+    pt.bg = rev(col)
   )
   
   dev.off()
   
-  rm(safe,ord,cc)
+  rm(ord,i,col)
   
 }
 
@@ -377,18 +388,28 @@ if(FALSE) {
   png(file="../../Image/Simulations-function.png", width = 400, height = 400)
   par(mar=c(7,4.1,0.6,5))
   
-  barplot(
-    height = t(funPred), names.arg = labSwap[rownames(funPred)],
-    beside = FALSE, las = 2L, ylim = c(0,1),
-    ylab = expression(paste("Mean", ~ italic(P)^2))
-  ) -> cc
+  funPred %>% scale(scale=FALSE) %>% svd(nu = 1L) %>% .$u %>% order -> ord
+  
+  plot(
+    NA, xlim=c(0.5,length(ord) + 0.5), ylim=c(-0.05,1), axes=FALSE,
+    ylab=expression(paste("Mean", ~ italic(P)^2)), xlab=""
+  )
+  axis(1L, 1:length(ord), labels=labSwap[rownames(funPred)[ord]], las=2L)
+  axis(2L, las=2L)
+  col <- grey(seq(0.3, 0.9, length.out=ncol(funPred)))
+  for(i in 1L:ncol(funPred)) {
+    ## lines(x=1:length(ord), y=funPred[ord,i])
+    points(x=1:length(ord), y=funPred[ord,i], pch=22L, bg=col[i], cex=2.5)
+  }
   
   legend(
-    x = tail(cc,1L) + 0.75, y = 0.8, pch=22L, xpd=TRUE, pt.cex=2, box.lwd = 0,
+    x = length(ord) + 0.75, y = 0.7, pch=22L, xpd=TRUE, pt.cex=2, box.lwd = 0,
     legend = parse(text=sprintf("italic(n) == %s",c(500,200,100,50,20,10))),
-    pt.bg = rev(grey(seq(0.3,0.9,length.out=6)))
+    pt.bg = rev(col)
   )
   
   dev.off()
+  
+  rm(ord,i,col)
   
 }

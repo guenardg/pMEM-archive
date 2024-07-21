@@ -50,7 +50,7 @@ First derivative:
 Remarks:
   - >
     Second and third derivatives featuring one-directional and two-directional
-    spikes, respectively. Slope changes occuring at the points for equidistant
+    spikes, respectively. Slope changes occurring at the points for equidistant
     transects, but may occur between the points for non-equidistant transects.
     In the 2D case, plane magnitude and orientation feature a similar behaviour.
   - >

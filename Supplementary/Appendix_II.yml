@@ -1,9 +1,10 @@
 ---
 headers:
   -
-    label: tab1
+    label: dwf_smooth
     header: >
-      This is table A-I 1
+      Observations from the estimation of spatial eigenfunction smoothness
+      obtained from the seven distance weighting functions (DWF).
 captions:
   - 
     label: ed_eqd_linear

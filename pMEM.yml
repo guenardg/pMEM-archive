@@ -8,13 +8,9 @@ headers:
   -
     label: dwf_tab2
     header: >
-      Variogram model based Distance-weighting functions proposed in the present
-      paper in the generation of predictive Moran's eigenvector maps.
-  -
-    label: dwf_smooth
-    header: >
-      Observations from the estimation of spatial eigenfunction smoothness
-      obtained from the seven distance weighting functions (DWF).
+      Distance-weighting functions usable for the generation of predictive
+      Moran's Eigenvector Maps, which are based on the classical MEM framework
+      (1--3) of variogram models (4--7).
   -
     label: aov_tab1
     header: >
@@ -42,36 +38,14 @@ captions:
     label: Oribatid_map
     caption: >
       Maps of substrate types, shrub density, and topography outlined from
-      Borcard and Legendre (1994, their Figure 1). The maps also feature the
-      sampling points (black dots), open waters (blue area), and flooded areas
-      (circumscribed by dotted curves).
-  - 
-    label: res_dwf
-    caption: >
-      Mean coefficient of prediction ($P^2$) of the different distance weighting
-      functions during the simulations and the different sample sizes ($n$) of
-      the spatial models obtained for every map-subset combination.
-  - 
-    label: res_map
-    caption: >
-      Mean coefficient of prediction ($P^2$) of the $25$ simulated random maps
-      (two-dimensional pseudo-data sets; map numbers are shown under the stacked
-      vertical bars) during the simulations and the different sample sizes of
-      the spatial models obtained from the best distance weighting functions;
-      the latter was defined as the one providing the highest value of the
-      prediction quality metric for any map and subset combination. The maps are
-      shown in increasing order of the $P^2$ for the highest sample size
-      ($n=500$).
-  - 
-    label: res_subset
-    caption: >
-      Mean coefficient of prediction ($P^2$) of the various random point subsets
-      during the simulations and the different sample sizes of the spatial
-      models obtained from the best distance weighting functions; the latter
-      being defined as the one providing the highest value of the prediction
-      quality metric for any map and subset combination. The subsets are shown
-      in increasing order of the $P^2$ for the highest sample size ($n=500$, the
-      subset numbers are only cardinal).
+      Borcard and Legendre (1994, their Figure 1), together with a principal
+      component analysis (PCA) biplot showing the sampling sites (markers) and
+      Oribatid mite species (arrows). The maps also feature the sampling points
+      (black dots), open waters (blue area), and flooded areas (circumscribed by
+      dotted curves). The labels at the tip of the PCA biplot arrows are the
+      names of the eight species with the largest axis loadings in their
+      vicinity. The two PCA axes represent approximatly a fourth of the total
+      species variation among the sites.
   - 
     label: res_SubsWatr
     caption: >
@@ -80,47 +54,15 @@ captions:
       solids and water per litre of uncompacted peat. Predictions are presented
       on the maps as rainbow colors and observed values at the sampling
       locations are presented with dots using the same rainbow color scale as
-      for the model predictions.
+      for the model predictions. The substrate density model ($P^2=0.088$)
+      is much weaker than the water content model ($P^2=0.25$).
   - 
     label: res_Oribatids
     caption: >
-      Results of the spatially-explicit model predicting the distribution of
-      each of the $35$ species of oribatid mites in the peat mat area sampled by
-      Borcard and Legendre (1994) in June 1989. Species spatial distribution was
-      modelled using spatial eigenfunctions were based on the power distance
-      weighting function. The model is a multivariate $L_1$-regularized
-      Poisson-family generalized linear model. Predictions are presented on the
-      maps as rainbow colors and observed values at the sampling locations are
-      presented with dots using the same rainbow color scale as for the model
-      predictions; the absent species are presented as an $\times$ symbol.
-      The likelihood-based coefficients of determination ($R^2$) are located in
-      parenthesis under the species name.
-  - 
-    label: res_LCBD
-    caption: >
-      Relationship (on a $\log-\log$ scale) between the local contributions to
-      $\beta$-diversity (_LCBD_) obtained from the $70$ observed Oribatid mite
-      species counts ($x$-axis) and the _LCBDs_ obtained from the species counts
-      estimated at the $70$ observation sites using the linear model involving
-      predictive Moran's Eigenvector Maps ($y$-axis). The _LCBD_ indices was
-      calculated on Hellinger-transformed predicted mite abundances for each
-      $35$ individual Oribatid species observed on the
-      $2.6\,\mathrm{m} \times 10.0\,\mathrm{m}$ peat moss mat area studied by
-      Borcard and Legendre (1994) in June 1989. These predictions were obtained
-      from a spatially-explicit model using spatial eigenfunctions based on the
-      power distance weighting function. Predictions are presented on the maps
-      as rainbow colors.
-  - 
-    label: res_diversity
-    caption: >
-      Results of the spatially-explicit model predicting the distribution of
-      Oribatid mites local contributions to the $\beta$-diversity (_LCBD_) on
-      the $2.6\,\mathrm{m} \times 10.0\,\mathrm{m}$ peat moss mat area studied
-      by Borcard and Legendre (1994) in June 1989. The _LCBD_ index was
-      calculated on the Hellinger-transformed predicted abundance values of the
-      $35$ individual Oribatid species, which were obtained from a
-      spatially-explicit model using spatial eigenfunctions based on the power
-      distance weighting function. Predictions are presented on the maps as
-      rainbow colours. Coloured circles are the estimated _LCBD_ indices at the
-      locations where the peat cores were obtained.
+      Site loadings of a two-axis PCA over the Oribatid mite study area. These
+      axes represent the two main components of the Oribatid mite community
+      structure (representing approximately 25% of the among-site species
+      variability). Rainbow colors pixels on the surface of the study area are
+      the values obtained from predicted species counts, whereas the background
+      color of the markers correspond to the observed PCA axis loadings.
 ---

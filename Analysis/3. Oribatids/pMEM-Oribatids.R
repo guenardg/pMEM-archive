@@ -19,6 +19,73 @@ attach(geoMite)
 
 if(FALSE) {
   
+  PCA <- list()
+  PCA$Y <- core[,substr(colnames(core),1L,7L)=="Species"]
+  PCA$Y %<>% st_set_geometry(NULL) %>% as.matrix
+  PCA$n <- nrow(PCA$Y)
+  PCA$rsY <- rowSums(PCA$Y)
+  PCA$Y.tr <- (PCA$Y / PCA$rsY)^0.5
+  PCA$cmY <- colMeans(PCA$Y.tr)
+  PCA$Y.tr %>%
+    scale(center=PCA$cmY, scale=FALSE) %>%
+    svd -> PCA$svd
+  PCA$sites <- PCA$svd$u[,1L:2L]
+  dimnames(PCA$sites) <- list(rownames(PCA$Y),c("PC_1","PC_2"))
+  
+  ## (scale(PCA$Y.tr, center=PCA$cmY, scale=FALSE) %*%
+  ##   PCA$svd$v %*% diag(PCA$svd$d^-1) - PCA$svd$u) %>% round(6L)
+  ## (scale(PCA$Y.tr, center=PCA$cmY, scale=FALSE) %*%
+  ##   PCA$svd$v[,1L:2L,drop=FALSE] %*% diag(PCA$svd$d[1L:2L]^-1) -
+  ##     PCA$svd$u[,1L:2L,drop=FALSE]) %>% round(6L)
+  ## 100*PCA$svd$d[1L:2L]/sum(PCA$svd$d)
+  
+  PCA$vars <- PCA$svd$v[,1L:2L] %*% diag(PCA$svd$d[1L:2L])
+  dimnames(PCA$vars) <- list(colnames(PCA$Y),c("PC_1","PC_2"))
+  
+  ## Function to select a subset of the variables for which labels will be
+  ## displayed.
+  {function() {
+    X11()
+    par(mar=c(4.0,4.0,0.5,0.5))
+    plot(NA, xlim=range(PCA$vars[,"PC_1"]), ylim=range(PCA$vars[,"PC_2"]),
+         asp=1L, xlab="PCA1", ylab="PCA2", pch=3L, cex=0.5)
+    arrows(x0=0, y0=0, x1=PCA$vars[,"PC_1"], y1=PCA$vars[,"PC_2"],
+           length=0.05)
+    
+    s <- NULL
+    while(!is.null(xy <- locator(1L))) {
+      wh <- which.min(sqrt((xy$x - PCA$vars[,"PC_1"])^2 +
+                             (xy$y - PCA$vars[,"PC_2"])^2))
+      points(x=PCA$vars[wh,"PC_1"], y=PCA$vars[wh,"PC_2"])
+      s <- c(s,wh)
+    }
+    dev.off()
+    s
+  }}() -> PCA$sel
+  
+  ## 100*sum(PCA$svd$d[1L:2L])/sum(PCA$svd$d)
+  png("../../Image/Oribatids_PCA.png", width = 520, height = 480)
+  {function(){
+    par(mar=c(4.0,4.0,0.5,0.5))
+    plot(x=PCA$sites[,"PC_1"], y=PCA$sites[,"PC_2"], asp=1L, pch=3L, cex=0.5,
+         xlab=sprintf("PCA1 (%0.1f%%)",100*PCA$svd$d[1L]/sum(PCA$svd$d)),
+         ylab=sprintf("PCA2 (%0.1f%%)",100*PCA$svd$d[2L]/sum(PCA$svd$d)))
+    abline(v=0, lty=3L) ; abline(h=0, lty=3L)
+    arrows(x0=0, y0=0, x1=0.12*PCA$vars[,"PC_1"], y1=0.12*PCA$vars[,"PC_2"],
+           length=0.05)
+    a <- atan2(PCA$vars[PCA$sel,"PC_2"],PCA$vars[PCA$sel,"PC_1"])
+    h <- 0.12*sqrt(PCA$vars[PCA$sel,"PC_1"]^2 + PCA$vars[PCA$sel,"PC_2"]^2)
+    text(x=(h + 0.04)*cos(a), y=(h + 0.01)*sin(a), col="red",
+         labels=substr(rownames(PCA$vars),9L,16L)[PCA$sel])
+  }}()
+  dev.off()
+  
+  saveRDS(PCA, file="../../Data/PCA.rds")
+  
+} else PCA <- readRDS(file="../../Data/PCA.rds")
+
+if(FALSE) {
+  
   col <- list()
   col[["substrate"]] <- c(Sphagn1 = "#00ff00", Sphagn2 = "#fffb00",
                           Sphagn3 = "#774b00", Sphagn4 = "#ff8400",
@@ -28,9 +95,10 @@ if(FALSE) {
   col[["shrub"]] <- c(None = "#dfdfdf", Few = "#a7a7a7", Many = "#5c5c5c")
   col[["topo"]] <- c(Blanket = "#74cd00", Hummock = "#bc9d00")
   
-  ## X11(width=8.0, height=6.0)
-  png(filename="../../Image/Oribatid_map.png", width=800, height=600)
-  par(mar=c(1.1,2.1,1.1,0.1), mfrow=c(1L,4L))
+  ## X11(width=10.0, height=6.0)
+  png(filename="../../Image/Oribatid_map.png", width=1000, height=600)
+  
+  par(mar=c(1.1,2.1,1.1,0.1), fig=c(0,0.20,0,1))
   
   substrate %>%
     {plot(st_geometry(.), col=col[["substrate"]][.$Type], main="Substrate")}
@@ -48,6 +116,8 @@ if(FALSE) {
   core %>%
     {plot(st_geometry(.), pch = 21L, bg = "black", add=TRUE)}
   
+  par(mar=c(1.1,2.1,1.1,0.1), fig=c(0.20,0.40,0,1), new=TRUE)
+  
   shrub %>%
     {plot(st_geometry(.), col = col[["shrub"]][.$Type], main="Shrubs")}
   
@@ -61,6 +131,8 @@ if(FALSE) {
   
   core %>%
     {plot(st_geometry(.), pch = 21L, bg = "black", add=TRUE)}
+  
+  par(mar=c(1.1,2.1,1.1,0.1), fig=c(0.40,0.60,0,1), new=TRUE)
   
   topo %>%
     {plot(st_geometry(.), col = col[["topo"]][.$Type], main="Topography")}
@@ -76,20 +148,40 @@ if(FALSE) {
   core %>%
     {plot(st_geometry(.), pch = 21L, bg = "black", add=TRUE)}
   
+  par(mar=c(1.1,2.1,1.1,0.1), fig=c(0.60,1.00,1/3,1), new=TRUE)
+  
+  {function(){
+    par(mar=c(4.0,4.0,0.5,0.5))
+    plot(x=PCA$sites[,"PC_1"], y=PCA$sites[,"PC_2"], asp=1L, pch=3L, cex=0.5,
+         xlab=sprintf("PCA1 (%0.1f%%)",100*PCA$svd$d[1L]/sum(PCA$svd$d)),
+         ylab=sprintf("PCA2 (%0.1f%%)",100*PCA$svd$d[2L]/sum(PCA$svd$d)),
+         xlim=c(-0.25,0.35), ylim=c(-0.28,0.32))
+    abline(v=0, lty=3L) ; abline(h=0, lty=3L)
+    arrows(x0=0, y0=0, x1=0.12*PCA$vars[,"PC_1"], y1=0.12*PCA$vars[,"PC_2"],
+           length=0.05)
+    a <- atan2(PCA$vars[PCA$sel,"PC_2"],PCA$vars[PCA$sel,"PC_1"])
+    h <- 0.12*sqrt(PCA$vars[PCA$sel,"PC_1"]^2 + PCA$vars[PCA$sel,"PC_2"]^2)
+    text(x=(h + 0.04)*cos(a), y=(h + 0.02)*sin(a), col="red",
+         labels=substr(rownames(PCA$vars),9L,16L)[PCA$sel])
+  }}()
+  
+  par(mar=c(0.5,0.5,0.5,0.5), fig=c(0.60,1.00,0/3,1/3), new=TRUE)
+  
   plot(NA, xlim=c(0,1), ylim=c(0,1), axes = FALSE)
-  legend(x=0, y=0.9, pch=22L, pt.cex = 2.5, pt.bg=col[["substrate"]],
-         box.lwd = 0, legend=names(col[["substrate"]]), title="Substrate")
-  legend(x=0, y=0.6, pch=c(22L,NA,NA), pt.cex = 2.5, pt.bg=col[["water"]],
-         box.lwd = 0, lty = c(0L,3L,2L),
-         legend=c("Open water","Flooded area","Prediction polygon"))
-  legend(x=0, y=0.4, pch=22L, pt.cex = 2.5, pt.bg=col[["shrub"]], box.lwd = 0,
-         legend=names(col[["shrub"]]), title="Shrubs")
-  legend(x=0, y=0.2, pch=22L, pt.cex = 2.5, pt.bg=col[["topo"]], box.lwd = 0,
-         legend=names(col[["topo"]]), title="Topography")
+  legend(x=0, y=1, pch=22L, pt.cex = 2.5, pt.bg=col[["substrate"]],
+         box.lwd = 0.5, legend=names(col[["substrate"]]), title="Substrate")
+  legend(x=0.34, y=1, pch=22L, pt.cex = 2.5, pt.bg=col[["shrub"]],
+         box.lwd = 0.5, legend=names(col[["shrub"]]), title="Shrubs")
+  legend(x=0.6, y=1, pch=22L, pt.cex = 2.5, pt.bg=col[["topo"]],
+         box.lwd = 0.5, legend=names(col[["topo"]]), title="Topography")
+  legend(x=0.34, y=0.4, pch=c(22L,NA), pt.cex = 2.5, pt.bg=col[["water"]],
+         box.lwd = 0.5, lty = c(0L,3L),
+         legend=c("Open water","Flooded area"))
   
   dev.off()
   
   rm(col)
+  
 }
 
 ## Make predictions for the two continuous variables
@@ -387,27 +479,29 @@ if(FALSE) {
   
   dev.off()
   
-  ## Plot one-by-one: substrate density
-  grid$SubsDens %>%
-    {rasterFromXYZ(
-      cbind(
-        st_coordinates(.),
-        .[[names(which.min(optSubsDens$bestval))]]
-      ),
-      crs = st_crs(.)
-    )} %>%
-    plot(col=head(rainbow(1200L),1000L))
-  
-  ## Plot one-by-one: water content
-  grid$WatrCont %>%
-    {rasterFromXYZ(
-      cbind(
-        st_coordinates(.),
-        .[[names(which.min(optWatrCont$bestval))]]
-      ),
-      crs = st_crs(.)
-    )} %>%
-    plot(col=head(rainbow(1200L),1000L))
+  if(FALSE) {
+    ## Plot one-by-one: substrate density
+    grid$SubsDens %>%
+      {rasterFromXYZ(
+        cbind(
+          st_coordinates(.),
+          .[[names(which.min(optSubsDens$bestval))]]
+        ),
+        crs = st_crs(.)
+      )} %>%
+      plot(col=head(rainbow(1200L),1000L))
+    
+    ## Plot one-by-one: water content
+    grid$WatrCont %>%
+      {rasterFromXYZ(
+        cbind(
+          st_coordinates(.),
+          .[[names(which.min(optWatrCont$bestval))]]
+        ),
+        crs = st_crs(.)
+      )} %>%
+      plot(col=head(rainbow(1200L),1000L))
+  }
   
 }
 
@@ -506,8 +600,8 @@ if(FALSE) {
       dwf = dwf,
       foldid = FID,
       pts = st_coordinates(core),
-      Y = Y,
-      Z = Z,
+      Y = dat$Y,
+      Z = dat$Z,
       family = "poisson",
       control = list(cluster=cl)
     ) -> modOribatids[[dwf]]
@@ -519,7 +613,7 @@ if(FALSE) {
   
   rm(cl)
   
-  save(optOribatids, modOribatids, file="Data/optOribatids.rda")
+  save(optOribatids, modOribatids, file="../../Data/optOribatids.rda")
   
 } else load(file="../../Data/optOribatids.rda")
 
@@ -764,6 +858,7 @@ if(FALSE) {
 } else coefMat <- readRDS(file="../../Data/coefMat.rds")
 
 if(FALSE) {
+  
   cbind(
     dat$Y %>% apply(2L, min),
     dat$Y %>%
@@ -890,27 +985,41 @@ if(FALSE) {
   
   rm(dwf,tmp,sp)
   
-}
+  saveRDS(BD, file="../../Data/BD.rds")
+  
+} else BD <- readRDS(file="../../Data/BD.rds")
 
 if(FALSE) {
   
-  png("../../Image/Oribatid_LCBD.png", width = 320, height = 320)
+  library(lmodel2)
+  
+  data.frame(
+    fit = log10(BD$fit$power$LCBD),
+    obs = log10(BD$LCBD)
+  ) %>%
+    lmodel2(fit~obs, data=., nperm=99999) -> lm2LCBD
+  ## 
+  ## 10^1.4163204
+  
+  
+  ## X11(width=4.8, height=4.8)
+  png("../../Image/Oribatid_LCBD.png", width=480, height=480)
+  
   par(mar=c(4.1,4.1,0.6,0.6))
   
   data.frame(
     fit = log10(BD$fit$power$LCBD),
     obs = log10(BD$LCBD)
-  ) -> tmp
-  
-  plot(
-    fit~obs,
-    data = tmp,
-    xlim = log10(c(0.003,0.05)),
-    ylim = log10(c(0.003,0.05)),
-    xlab = "LCBD from observed species abundances",
-    ylab = "LCBD from fitted species abundances",
-    axes = FALSE
-  )
+  ) %>%
+    plot(
+      fit~obs,
+      data = .,
+      xlim = log10(c(0.003,0.05)),
+      ylim = log10(c(0.003,0.05)),
+      xlab = "LCBD from observed species abundances",
+      ylab = "LCBD from fitted species abundances",
+      axes = FALSE
+    )
   
   c(0.002,0.005,0.01,0.02,0.05) %>%
     axis(1L, at=log10(.), label=.)
@@ -918,62 +1027,43 @@ if(FALSE) {
   c(0.002,0.005,0.01,0.02,0.05) %>%
     axis(2L, at=log10(.), label=.)
   
-  tmp <- lm(fit~obs, data = tmp)
+  lm2LCBD$regression.results %>%
+    {abline(
+      a = .[2L,2L],
+      b = .[2L,3L]
+    )}
   
-  abline(tmp)
+  data.frame(
+    fit = log10(BD$fit$power$LCBD),
+    obs = log10(BD$LCBD)
+  ) %>%
+    colMeans -> cc
   
-  xx <- seq(log10(0.002), log10(0.05), length.out=200L)
+  ## points(x=cc[2L], y=cc[1L], pch=21L, bg="black")
   
-  tmp %>%
-    predict(
-      newdata = data.frame(obs=xx),
-      interval = "confidence"
-    ) -> int
-  lines(x = xx, y = int[,"lwr"], lty = 2L)
-  lines(x = xx, y = int[,"upr"], lty = 2L)
+  lm2LCBD$confidence.intervals[2L,4L:5L] %>%
+    sapply(
+      function(x)
+        abline(
+          a = cc[1L] - x*cc[2L],
+          b = x,
+          lty = 3L
+        )
+    ) %>%
+    invisible
   
-  tmp %>%
-    predict(
-      newdata = data.frame(obs=xx),
-      interval = "prediction"
-    ) -> int
-  lines(x = xx, y = int[,"lwr"], lty = 3L)
-  lines(x = xx, y = int[,"upr"], lty = 3L)
-  
-  ss <- summary(tmp)
-  tt <- (ss$coefficients[2L,1L] - 1)/ss$coefficients[2L,2L]
-  ss$coefficients[1L,4L]
-  
-  text(
-    labels = parse(
-      text = sprintf(
-        "italic(R)[italic(adj)]^2 == %0.3f",
-        ss$adj.r.squared
-      ),
-    ),
-    x = log10(0.003),
-    y = log10(0.04),
-    adj = 0
-  )
-  
-  text(
-    labels = parse(
-      text = sprintf(
-        "atop(italic(y) == alpha*italic(x)^beta,atop(italic(Pr)[alpha == 1] == %0.3f,italic(Pr)[beta == 1] == %0.3f))",
-        ss$coefficients[1L,4L],
-        2*pt(q = tt, df = ss$df[2L], lower.tail = FALSE)
-      ),
-    ),
-    x = log10(0.003),
-    y = log10(0.025),
-    adj = 0
-  )
+  text(log[10]~italic(y) == a + b %*% log[10]~italic(x),
+       x=log10(0.003), y=log10(0.04), adj=0)
   
   dev.off()
   
-  rm(tmp, xx, ss, tt, int)
+  lm2LCBD$rsquare
+  lm2LCBD$P.param
   
-}
+  saveRDS(lm2LCBD, file="../../Data/LCBD_reg_summary.rds")
+  ## readRDS(file="../../Data/LCBD_reg_summary.rds")
+  
+} else lm2LCBD <- readRDS(file="../../Data/LCBD_reg_summary.rds")
 
 BD$fit$power$LCBD %>%
   quantile(na.rm=TRUE, prob=c(0,0.5,1))
@@ -986,16 +1076,15 @@ grid$LCBD %>%
   apply(2L, quantile, na.rm=TRUE, prob=c(0,0.5,1)) %>% t
 
 if(FALSE) {
+  
   c(linear="Linear",power="Power",hyperbolic="Hyperbolic",
     spherical="Spherical",exponential="Exponential",
     Gaussian="Gaussian",hole_effect="Hole effect") -> labSwap
   
   saveRDS(labSwap, file="../../Data/labSwap.rds")
-  saveRDS(grid, file="../../Data/grid.rds")
-} else {
+  
+} else
   labSwap <- readRDS(file="../../Data/labSwap.rds")
-  grid <- readRDS(file="../../Data/grid.rds")
-}
 
 if(FALSE) {
   
@@ -1154,6 +1243,188 @@ if(FALSE) {
   
   rm(rng,colmap,dwf,figx)
   
+}
+
+## Idée: remplacer les LCBD par une projection des prédictions dans un espace
+## réduit des abondances d'espèces transformées Hellinger...
+
+if(FALSE) {
+  
+  grid$PCA <- list()
+  
+  #' dwf="linear"
+  for(dwf in names(modOribatids)) {
+
+    tmp <- NULL
+    
+    #' sp=rownames(modOribatids[[dwf]]$sp)[1L]
+    for(sp in rownames(modOribatids[[dwf]]$sp))
+      tmp %<>% cbind(prdOribatids(sp = sp, dwf = dwf)[[sp]])
+    
+    tmp %>%
+      {(./rowSums(.))^0.5} %>%
+      scale(
+        center=PCA$cmY, scale=FALSE
+      ) %*% PCA$svd$v[,1L:2L] %*% diag(PCA$svd$d[1L:2L]^-1) %>%
+      as.data.frame -> grid$PCA[[dwf]]
+    colnames(grid$PCA[[dwf]]) <- c("PC_1","PC_2")
+    st_geometry(grid$PCA[[dwf]]) <- st_geometry(grid$Other)
+    
+  }
+  
+  rm(dwf,tmp,sp)
+  
+}
+
+if(FALSE) {
+  
+  ## X11(width=8, height=8)
+  
+  for(dwf in names(grid$PCA)) {
+    
+    png(
+      sprintf("../../Image/Oribatid_PCA_%s.png",dwf),
+      width = 740,
+      height = 800
+    )
+    
+    par(fig=c(0.0,0.2,0.0,1.0), mar=c(4,6.1,4,2))
+    
+    seq(
+      min(PCA$sites[,"PC_1"]),
+      max(PCA$sites[,"PC_1"]),
+      length.out=1000L
+    ) %>%
+      matrix(1L,1000L) %>%
+      image(
+        zlim = range(PCA$sites[,"PC_1"]),
+        col = colmap,
+        axes = FALSE,
+        ylab = "PCA1",
+        cex.lab = 1.5
+      )
+    
+    box()
+    
+    seq(-0.18,0.18,0.04) %>%
+      {axis(
+        side = 2L,
+        label = .,
+        at = (. - min(PCA$sites[,"PC_1"]))/
+          (max(PCA$sites[,"PC_1"]) - min(PCA$sites[,"PC_1"])),
+        cex.axis = 1.5
+      )}
+    
+    par(fig=c(0.2,0.5,0.0,1.0), mar=c(2.5,1.5,2,0.5), new=TRUE)
+    
+    grid$PCA[[dwf]] %>%
+      {rasterFromXYZ(
+        cbind(
+          st_coordinates(.),
+          .[["PC_1"]]
+        ),
+        crs = st_crs(.)
+      )} %>%
+      as.matrix %>% t %>% .[,ncol(.):1L] %>%
+      image(
+        x = seq(0,2.6,length.out=nrow(.)),
+        y = seq(0,10,length.out=ncol(.)),
+        zlim = range(PCA$sites[,"PC_1"]),
+        col = colmap,
+        axes = FALSE,
+        asp = 1,
+        xlab = "",
+        ylab = ""
+      )
+    
+    axis(1L)
+    
+    axis(2L)
+    
+    box()
+    
+    points(
+      st_coordinates(core),
+      pch=21L,
+      bg = PCA$sites[,"PC_1"] %>%
+        {(. - min(.))/(max(.) - min(.))} %>%
+        {colmap[1L + round(999*.)]},
+      cex=2
+    )
+    
+    par(fig=c(0.5,0.7,0.0,1.0), mar=c(4,6.1,4,2), new=TRUE)
+    
+    seq(
+      min(PCA$sites[,"PC_2"]),
+      max(PCA$sites[,"PC_2"]),
+      length.out=1000L
+    ) %>%
+      matrix(1L,1000L) %>%
+      image(
+        zlim = range(PCA$sites[,"PC_2"]),
+        col = colmap,
+        axes = FALSE,
+        ylab = "PCA2",
+        cex.lab = 1.5
+      )
+    
+    box()
+    
+    seq(-0.22,0.28,0.05) %>%
+      {axis(
+        side = 2L,
+        label = .,
+        at = (. - min(PCA$sites[,"PC_2"]))/
+          (max(PCA$sites[,"PC_2"]) - min(PCA$sites[,"PC_2"])),
+        cex.axis = 1.5
+      )}
+    
+    par(fig=c(0.7,1.0,0.0,1.0), mar=c(2.5,1.5,2,0.5), new=TRUE)
+    
+    grid$PCA[[dwf]] %>%
+      {rasterFromXYZ(
+        cbind(
+          st_coordinates(.),
+          .[["PC_2"]]
+        ),
+        crs = st_crs(.)
+      )} %>%
+      as.matrix %>% t %>% .[,ncol(.):1L] %>%
+      image(
+        x = seq(0,2.6,length.out=nrow(.)),
+        y = seq(0,10,length.out=ncol(.)),
+        zlim = range(PCA$sites[,"PC_2"]),
+        col = colmap,
+        axes = FALSE,
+        asp = 1,
+        xlab = "",
+        ylab = ""
+      )
+    
+    axis(1L)
+    
+    axis(2L)
+    
+    box()
+    
+    points(
+      st_coordinates(core),
+      pch=21L,
+      bg = PCA$sites[,"PC_2"] %>%
+        {(. - min(.))/(max(.) - min(.))} %>%
+        {colmap[1L + round(999*.)]},
+      cex=2
+    )
+    
+    dev.off()
+  }
+  
+}
+
+if(FALSE) {
+  saveRDS(grid, file="../../Data/grid.rds")
+} else {
+  grid <- readRDS(file="../../Data/grid.rds")
 }
 
 if(FALSE) {
