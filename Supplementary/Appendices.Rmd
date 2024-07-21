@@ -343,7 +343,7 @@ Also, multiple discontinuous functions may be combined in ways amenable to
 represent a continuous or nearly continuous process, at least down to some
 calculable scale.
 
-For this study, we analyzed the smoothness, up the third derivative, of SEF
+For this study, we analysed the smoothness, up the third derivative, of SEF
 obtained from seven different DWF in the one-dimensional (transect) and the
 two-dimensional (surface) contexts.
 
@@ -381,9 +381,9 @@ with a minimum value of $0.5$ and a maximum value of $1.5$ that was standardized
 to have a total length of $10$; thus having a mean distance of $1$ between
 adjacent locations. For each of these two transects, sets of SEF were generated
 for each of the seven DWF described previously, for a total of $14$ sets. Since
-$11$ locations were defined, each of these set contained a maximum of ten SEF,
-and thus a maximum of $140$ SEF could be generated. Each SEF was evaluated in
-steps of $0.001$, beginning at distance $0.1$ before the first location (i.e.,
+$11$ locations were defined, each of these set contained a maximum of ten SEF;
+thus a maximum of $140$ SEF could be generated. Each SEF was evaluated in steps
+of $0.001$, beginning at distance $0.1$ before the first location (i.e.,
 $-0.01$) and ending at distance $0.1$ after the last (i.e., $10.1$), allowing
 for extrapolation margin. We then calculated the first three derivatives of each
 of these functions using the polynomial spline approach described above.
@@ -1608,8 +1608,8 @@ The following seven figures show the distributions of $35$ Oribatid mite species
 inhabiting the peat bog mat surrounding Lac Geai as predicted by models built
 using pMEM spatial eigenfunctions based on the seven distance weighting
 functions presented in this paper. The specific likelihood coefficients of
-determination differ among the models and are shown in parentheses under the
-species labels.
+determination ($R^2$) differ among the models and are shown in parentheses under
+the species labels.
 
 ![](../Image/Oribatid_predictions-linear.png)
 
