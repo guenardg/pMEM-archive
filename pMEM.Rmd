@@ -343,9 +343,9 @@ w_{i,j} =
 $$
 
 where $f(d_{i,j}; d_{max}, \alpha)$ is a function of the distance with a range
-parameter $d_{max}$ and a shape parameter $\alpha$ (see Appendix I -- Distance
-weighting function derived from the MEM framework, for details about these
-functions).
+parameter $d_{max}$ and a shape parameter $\alpha$ (see Appendix I.
+Methodological details -- Distance weighting function derived from the MEM
+framework, for details about these functions).
 
 These functions take values $0$ for distances above $d_{max}$, thereby involving
 a threshold in an implicit, distance-based, manner. For the calculation of pMEM,
@@ -454,8 +454,8 @@ contained $5\,184$ points regularly spaced over a $72 \times 72$ staggered-row
 triangular grid pattern with neighbouring points located at distances $1$ (in
 arbitrary spatial units) from one another. The data were generated at each point
 of that grid following a randomly-seeded Wiener process (i.e., Brownian motion)
-whose implementation is described in the appendices (Appendix I -- Algorithm to
-generate the spatially-structured random maps).
+whose implementation is described in the appendices (Appendix I. Methodological
+details -- Algorithm to generate the spatially-structured random maps).
 
 To simulate the effect of sampling variation and sample size ($n$), $25$ sets of
 $500$ vertices were randomly selected. From each of these sets, pairs of subsets
@@ -475,8 +475,9 @@ $\alpha$ were $0.25$ and $1.75$, respectively.
 Simulations results were analyzed on the basis of the predictions quality factor
 $Q$, which the log ratio of the mean square deviation $MSD$ and the mean squared
 error $MSE$, whereas the coefficient of prediction ($P^2$) was used to display
-the results (see Appendix I -- Calculations on the simulation results, for a
-justification of using $Q$ and for $P^2$ and details on their calculation).
+the results (see Appendix I. Methodological details -- Calculations on the
+simulation results, for a justification of using $Q$ and for $P^2$ and details
+on their calculation).
 
 Simulation results were analyzed using the analysis of variance (ANOVA). Two
 such analyses were performed. A first ANOVA was carried out on all $26\,250$
@@ -668,8 +669,8 @@ different ways with increasing training sample size.
 ## Oribatid mite example
 
 The best subordinate model predicting substrate density was found to use the
-power DWF (Appendix Eq. A2) with a range of $d_{max} = 1.14\,\mathrm{m}$ and a
-shape parameter value of $\alpha = 0.67$. This model was made of six SEF; the
+power DWF (Appendix I – Eq. A2) with a range of $d_{max} = 1.14\,\mathrm{m}$ and
+a shape parameter value of $\alpha = 0.67$. This model was made of six SEF; the
 square root of the mean squared error (*RMS*) was $11.3\,\mathrm{g~L^{-1}}$
 ($P^2 = 0.088$; Figure `r figCounter$getNumber("res_SubsWatr")`). This model was
 thus only slightly better than taking the mean value substrate density
@@ -680,13 +681,13 @@ $d_{max} = 1.12\,\mathrm{m}$, comprising $11$ SEF; the *RMSE* was
 $122.5\,\mathrm{g~L^{-1}}$ ($P^2 = 0.25$).
 
 The best DWF for predicting Oribatid mite species distribution was the power DWF
-(Appendix Eq. A2), with a range of $d_{max} = 2.34\,\mathrm{m}$, a shape
+(Appendix I – Eq. A2), with a range of $d_{max} = 2.34\,\mathrm{m}$, a shape
 parameter value of $\alpha = 1.68$, and deviance value ($-2\log L$) of $4.137$.
 The model's likelihood-based $R^2$ varied from $0.073$ for species *Hyporufu* to
-$0.878$ for species *Limncfci* (median: $0.548$; Appendix II Table A-II 1). The
-ability of the model to predict mite species counts was proportional to the mean
-abundance of the species in the sampling area ($F_{1,33} = 18.32$, $P < 0.001$;
-with log-transformed mean abundance and predictability estimated as
+$0.878$ for species *Limncfci* (median: $0.548$; Appendix II – Table A-II 1).
+The ability of the model to predict mite species counts was proportional to the
+mean abundance of the species in the sampling area ($F_{1,33} = 18.32$,
+$P < 0.001$; with log-transformed mean abundance and predictability estimated as
 $Q = -\log_{10} (1 - R^2)$). For instance, the expected $R^2$ is $0.357$ for a
 mean count of $0.157~\mathrm{ind.~core^{-1}}$ (the minimum value observed),
 $0.574$ for a mean count of $1~\mathrm{ind.~core^{-1}}$, $0.745$ for a mean
@@ -811,10 +812,7 @@ in a few other cores, thereby making the determination of their preferred
 conditions more uncertain. On the other hand, the more prevalent species were
 observed in most of the cores with low to higher frequencies, a situation that
 makes it easier to determine the preferred conditions sought after by the
-species, provided that relevant descriptors are available. Finally, we found no
-statistically significant differences between the Oribatid mite
-$\beta$-diversity, in terms of the total $\beta$-diversity and *LCBD* indices,
-calculated from the observed and the predicted species frequencies.
+species, provided that relevant descriptors are available.
 
 The computation of the pMEM relies on square matrices for storing distances and
 the weights and on eigenvalue decomposition, which is a computationally
