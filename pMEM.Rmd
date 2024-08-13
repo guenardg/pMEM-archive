@@ -1,8 +1,8 @@
 ---
 title: "Spatially-explicit predictions using spatial eigenvector maps"
 author:
-  - Author 1
-  - Author 2
+  - Guillaume Guénard^[Département de sciences biologiques, Université de Montréal, PO Box 6128 Centre-Ville Station, Montreal Quebec, H3C 3J7 Canada <guillaume.guenard@umontreal.ca>]
+  - Pierre Legendre^[Département de sciences biologiques, Université de Montréal, PO Box 6128 Centre-Ville Station, Montreal Quebec, H3C 3J7 Canada <pierre.legendre@umontreal.ca>]
 date: "`r Sys.Date()`"
 header-includes:
   - \usepackage{setspace}
@@ -10,16 +10,10 @@ header-includes:
   - \usepackage{lineno}
   - \linenumbers
 output:
-  pdf_document:
-    toc: no
-    toc_depth: 3
-  word_document:
-    toc: no
-    toc_depth: 3
-  html_document:
-    toc: no
-    toc_depth: 3
   latex_document:
+    toc: no
+    toc_depth: 3
+  pdf_document:
     toc: no
     toc_depth: 3
 bibliography: pMEM.bib
@@ -111,12 +105,12 @@ Running headline: Spatially-explicit predictions
     variation, which we call « predictive Moran's Eigenvector Maps » (pMEM),
     that can be used to make spatially-explicit predictions for any
     environmental variables, biotic or abiotic. It unites features of a method
-    called « Moran's Eigenvector Maps » (MEM) and spatial interpolation, and
-    produces sets of descriptors that can be used with any other modelling
-    method, such as regressions, support vector machines, regression trees,
-    artificial neural networks, and so on. The pMEM are the predictive
-    eigenvectors produced by using a DWF in the construction of MEMs. Seven
-    types of pMEM, each associated with one of seven different distance
+    called « Moran's Eigenvector Maps » (MEM) and those of spatial
+    interpolation, and produces sets of descriptors that can be used with any
+    other modelling method, such as regressions, support vector machines,
+    regression trees, artificial neural networks, and so on. The pMEM are the
+    predictive eigenvectors produced by using a DWF in the construction of MEMs.
+    Seven types of pMEM, each associated with one of seven different distance
     weighting functions (DWF), were defined and studied.
 
 2.  We performed a simulation study to determine the power of different types of
@@ -124,7 +118,7 @@ Running headline: Spatially-explicit predictions
     variables.
 
 3.  We exemplified the application of the method to the prediction of the
-    spatial distribution of $35$ Oribatid mite species living in a peat moss
+    spatial distribution of $35$ Oribatid mites living in a peat moss
     (*Sphagnum*) mat on the shore of a Laurentian lake. We also provide an `R`
     language package called **pMEM** to make calculations easily available to
     end users.
@@ -132,12 +126,45 @@ Running headline: Spatially-explicit predictions
 4.  The results indicate that anyone of the pMEMs obtained from the different
     distance weighting functions could be the best suited one to predict spatial
     variability in a given data set. Their application to the prediction of mite
-    species distributions highlights the capability of pMEMs for predicting
-    species distributions, and for providing spatially-explicit estimates of
-    environmental variables that are useful for predicting species
-    distributions.
+    distributions highlights the capability of pMEMs for predicting
+    distributions, and for providing spatially-explicit estimates of
+    environmental variables that are useful for predicting distributions.
 
 **Key-words**: space, prediction, interpolation, mapping, Moran's I
+
+## Résumé
+
+1.  Dans cet article, nous expliquons comment obtenir des ensembles de
+    descripteurs de la variation spatiale, que nous appelons des "cartes
+    prédictives de vecteurs propres de Moran" (pMEM), qui peuvent être utilisés
+    pour faire des prévisions explicites dans l’espace pour n’importe quelle
+    variable environnementale, biotique ou abiotique. Il réunit les
+    caractéristiques de la méthode des "cartes de vecteurs propres de Moran
+    (MEM)" et celles de l’interpolation spatiale, et produit des ensembles de
+    descripteurs qui peuvent être utilisés avec n’importe quelle autre méthode
+    de modélisation, par exemple les méthodes de régression, les machines à
+    vecteurs de support, les arbres de régression, les réseaux neuronaux
+    artificiels, etc. Les pMEM sont des vecteurs propres prédictifs produits par
+    l’utilisation d’une fonction de pondération de la distance dans la
+    construction des MEM. Sept types de pMEM, chacun associé à l’une de sept
+    fonctions de pondération de la distance (DWF), sont définis et ont été
+    étudiés.
+2.  Nous avons réalisé une étude par simulation pour déterminer la puissance de
+    différents types de fonctions propres pMEM à faire des prédictions précises
+    pour des variables structurées dans l’espace.
+3.  Nous avons illustré l’application de la méthode à la prédiction de la
+    distribution spatiale de 35 espèces d’acariens Oribates vivant dans un tapis
+    de tourbe (Sphagnum) sur les rives d’un lac des Laurentides. Nous
+    fournissons également un paquet en langage R, appelé pMEM, qui rend les
+    calculs facilement accessibles aux utilisateurs.
+4.  Les résultats indiquent que n’importe lequel des ensembles de pMEM obtenus à
+    partir des différentes fonctions de pondération de la distance pourrait être
+    le mieux adapté pour prédire la variabilité spatiale d’un jeu de données
+    particulier. Leur application à la prédiction de la distribution des espèces
+    d’acariens met en évidence la capacité des pMEM à prédire la distribution
+    des espèces et à fournir des estimations spatialement explicites des
+    variables environnementales qui sont utiles pour prédire la distribution des
+    espèces.
 
 # Introduction
 
@@ -246,7 +273,7 @@ plots, random sets of sampling locations, and sample sizes for each of the seven
 DWF under consideration. Lastly, we exemplified spatial modelling in practice by
 modelling the substrate density and water content of the peat vegetation mat
 located along the shore of a Canadian Shield bog lake, and the spatial
-distribution of $35$ Oribatid mite species living in that soil.
+distribution of $35$ Oribatid mites living in that soil.
 
 # Materials and methods
 
@@ -517,10 +544,10 @@ community structure was analyzed using a principal component analysis (PCA) of
 the Hellinger-transformed abundance data [@legendre_ecologically_2001], keeping
 the first two principal components.
 
-In addition to the Oribatid mite counts by species, the data set includes six
-environmental predictors, namely, (1) the substrate density (quantitative; the
-mass of an unpacked volume dry substrate, $\mathrm{g \cdot L^{-1}}$), (2) the
-water content (quantitative; the mass of water by volume of wet substrate,
+In addition to the Oribatid mite counts, the data set includes six environmental
+predictors, namely, (1) the substrate density (quantitative; the mass of an
+unpacked volume dry substrate, $\mathrm{g \cdot L^{-1}}$), (2) the water content
+(quantitative; the mass of water by volume of wet substrate,
 $\mathrm{g \cdot L^{-1}}$), (3) the substrate type (qualitative; represented by
 six non mutually exclusive binary-coded classes: « Sphagn1 », « Sphagn2 »,
 « Sphagn3 », « Sphagn4 », « Litter », « Bare peat »), shrub density
@@ -535,32 +562,32 @@ file and added polygon geometries for the substrate type, shrub density,
 topography, and flooded areas, which we outlined manually at a resolution of
 roughly $0.01\,\mathrm{m}$ from the three images obtained from figure 1 in
 @borcard_environmental_1994 using software QGIS <https://qgis.org>
-(Figure `r figCounter$getNumber("Oribatid_map")`). The species and environmental
-data matrix contains the variables on which spatial modelling will be carried
-out in this example.
+(Figure `r figCounter$getNumber("Oribatid_map")`). The Oribatid mites and
+environmental data matrix contains the variables on which spatial modelling will
+be carried out in this example.
 
 ### Modelling
 
 Two continuous environmental variables, namely substrate density and water
 content, were not available from geographic information layers, but measurements
 had been taken at the sampling point locations. To be able to use them for
-predicting the density of the different mite species at any location over the
-sampling area, a continuous map of these variables was needed. We took this need
-as an opportunity to illustrate single-variable prediction using SEF
-exclusively. We began be generating a point grid over the sampling area with a
-resolution of $5\,\mathrm{cm}$. This grid was used as a basis for generating GIS
-rasters for the different variables involved in this example. Variables
-substrate density and water content were modelled using an $L_1$-regularized
-(LASSO) linear regression model calculated using `R` package **glmnet**
-[@Friedman2010GlmNet] using the Gaussian family of Generalized Linear Models
-(GLM) and predicted values were computed over the grid points. Values of
-parameters $d_{max}$ and $\alpha$ were estimated by **DEoptim** (default
-parameters), using $d_{max}$ values between $1$ and $5\,\mathrm{m}$ and $\alpha$
-values between $0.15$ and $1.85$. Seven cross-validation folds were used for
-estimating the predictive power. Assignment to cross-validation folds was
-carried out in a systematic manner following the order in which the data appear
-in the data set by selecting data points with indices $i + 7*j$ where $i$ is the
-cross-validation fold ($1$--$7$) and $j = 0, 1, 2, ..., 9$.
+predicting the density of the different mites at any location over the sampling
+area, a continuous map of these variables was needed. We took this need as an
+opportunity to illustrate single-variable prediction using SEF exclusively. We
+began be generating a point grid over the sampling area with a resolution of
+$5\,\mathrm{cm}$. This grid was used as a basis for generating GIS rasters for
+the different variables involved in this example. Variables substrate density
+and water content were modelled using an $L_1$-regularized (LASSO) linear
+regression model calculated using `R` package **glmnet** [@Friedman2010GlmNet]
+using the Gaussian family of Generalized Linear Models (GLM) and predicted
+values were computed over the grid points. Values of parameters $d_{max}$ and
+$\alpha$ were estimated by **DEoptim** (default parameters), using $d_{max}$
+values between $1$ and $5\,\mathrm{m}$ and $\alpha$ values between $0.15$ and
+$1.85$. Seven cross-validation folds were used for estimating the predictive
+power. Assignment to cross-validation folds was carried out in a systematic
+manner following the order in which the data appear in the data set by selecting
+data points with indices $i + 7*j$ where $i$ is the cross-validation fold
+($1$--$7$) and $j = 0, 1, 2, ..., 9$.
 
 Variables *substrate type*, *shrub density*, *topography*, and *flooded* were
 available directly from the polygon geometries. Variable *substrate type* was a
@@ -576,17 +603,17 @@ polynomial contrasts, whereas variable *topography*, which has two levels was
 transformed into a binary variable and centred to a mean value of $0$. Finally,
 variable *flooded* was used as is.
 
-We modelled species distributions from the individual count data using a
+We modelled Oribatid mite distributions from the individual count data using a
 Poisson-family $L_1$-regularized multivariate generalized regression model
 (GLM), which was also calculated using the `R` package **glmnet**
 [@Friedman2010GlmNet; @Tay2023GlmNet]. We used customized `R` language code to
-allow **glmnet** to handle a multivariate response (i.e., the 35 mite species)
-since the package does not support multivariate models natively. The model's
-quality of fit was estimated separately for each species using the
-likelihood-based $R^2$ coefficient for the Poisson-family of GLM proposed by
-@guenard_modelling_2017. Values of parameters $d_{max}$ and $\alpha$ were
-estimated by **DEoptim** under identical conditions as for the aforementioned
-substrate density and water content models.
+allow **glmnet** to handle a multivariate response (i.e., the 35 mites) since
+the package does not support multivariate models natively. The model's quality
+of fit was estimated separately for each mite using the likelihood-based $R^2$
+coefficient for the Poisson-family of GLM proposed by @guenard_modelling_2017.
+Values of parameters $d_{max}$ and $\alpha$ were estimated by **DEoptim** under
+identical conditions as for the aforementioned substrate density and water
+content models.
 
 # Results
 
@@ -680,28 +707,28 @@ Table `r tableCounter$getNumber("dwf_tab2")`) with a range of
 $d_{max} = 1.12\,\mathrm{m}$, comprising $11$ SEF; the *RMSE* was
 $122.5\,\mathrm{g~L^{-1}}$ ($P^2 = 0.25$).
 
-The best DWF for predicting Oribatid mite species distribution was the power DWF
+The best DWF for predicting Oribatid mite distribution was the power DWF
 (Appendix I – Eq. A2), with a range of $d_{max} = 2.34\,\mathrm{m}$, a shape
 parameter value of $\alpha = 1.68$, and deviance value ($-2\log L$) of $4.137$.
-The model's likelihood-based $R^2$ varied from $0.073$ for species *Hyporufu* to
-$0.878$ for species *Limncfci* (median: $0.548$; Appendix II – Table A-II 1).
-The ability of the model to predict mite species counts was proportional to the
-mean abundance of the species in the sampling area ($F_{1,33} = 18.32$,
-$P < 0.001$; with log-transformed mean abundance and predictability estimated as
+The model's likelihood-based $R^2$ varied from $0.073$ for mite *Hyporufu* to
+$0.878$ for mite *Limncfci* (median: $0.548$; Appendix II – Table A-II 1). The
+ability of the model to predict mite counts was proportional to the mean
+abundance of the mites in the sampling area ($F_{1,33} = 18.32$, $P < 0.001$;
+with log-transformed mean abundance and predictability estimated as
 $Q = -\log_{10} (1 - R^2)$). For instance, the expected $R^2$ is $0.357$ for a
 mean count of $0.157~\mathrm{ind.~core^{-1}}$ (the minimum value observed),
 $0.574$ for a mean count of $1~\mathrm{ind.~core^{-1}}$, $0.745$ for a mean
 count of $10~\mathrm{ind.~core^{-1}}$, and $0.807$ for a mean count of
 $35.26~\mathrm{ind.~core^{-1}}$ (the maximum value observed). Also consistent
-with this result is the observation that species absent from a large number of
+with this result is the observation that mites absent from a large number of
 sites (e.g., *Hyporufu*, which is absent from $60$ of the $70$ sites) tend to
-have a small $R^2$ compared to species present in many sites (e.g., *Limncfci*,
+have a small $R^2$ compared to mites present in many sites (e.g., *Limncfci*,
 which is absent from only $15$ of the $70$ sites).
 
 ### Community structure
 
-The two axes of the PCA carried out on the transformed species composition
-matrix accounted for approximately $25\%$ of the variance of the data matrix
+The two axes of the PCA carried out on the transformed response data matrix
+accounted for approximately $25\%$ of the variance of the data matrix
 (Figure `r figCounter$getNumber("Oribatid_map")`). The first PCA axis was driven
 chiefly by the preponderance of *Tectvela* *Oppiniva*, and *Suctobsp*, which are
 associated with negative loading, with respect to that of *Limncfci*,
@@ -736,11 +763,11 @@ Instead, it provides descriptors, in the form of SEF, to be used later during
 analyses and model development. These descriptors are usable as is (e.g., when
 predicting substrate density or water content in the mite example) or in
 combination with additional descriptors (e.g., when predicting Oribatid mite
-species distributions in our example). Furthermore, any suitable model
-estimation approach can be used during the subsequent steps of the modelling
-workflow (e.g., an $L_1$ regularized generalized linear model in the oribatid
-mite examples). Besides the more common linear model estimation methods such as
-the one we used in the example, alternative machine learning methods can also be
+distributions in our example). Furthermore, any suitable model estimation
+approach can be used during the subsequent steps of the modelling workflow
+(e.g., an $L_1$ regularized generalized linear model in the oribatid mite
+examples). Besides the more common linear model estimation methods such as the
+one we used in the example, alternative machine learning methods can also be
 used. These methods include regression trees, gradient boosted trees
 [@mason_boosting_1999; @chen_xgboost_2016], Bayesian additive regression trees
 [@chipman_bart_2010], support vector machines [@cortes_support-vector_1995],
@@ -784,7 +811,7 @@ various degrees of predictability using pMEM. Some of the DWF were more often
 selected than others as the best-suited one for a given set of conditions (in
 terms of spatial context, sample, and so on). For instance, the power DWF was
 the most commonly selected and the linear DWF was the least commonly selected,
-yet every DWF was found to be the most adequate at making spatially-explicit
+yet every DWF was found to be the adequate at making spatially-explicit
 predictions on given $Map \times Sample$ combinations. On the one hand, picking
 the most suitable DWF was not as important for spatial predictability as the
 sample size, and its effect was relatively small with respect to the among-map
@@ -797,22 +824,21 @@ involving $70$ observations. Using SEF-only models and regularized regressions,
 we were nevertheless able to predict the spatial distributions of two
 environmental variable, the substrate's density and water content, with some
 success ($P^2>0$). Then, using complex models involving environmental variables,
-we have been able to predict the distribution of $35$ mite species with various
-degrees of success. For instance, substrate density was predicted with a modest
-accuracy ($P^2$ of $0.088$), with an $RMSE$ of $11.3\,\mathrm{g~L^{-1}}$, which
-was only slightly above the variable's standard deviation
-($11.9\,\mathrm{g~L^{-1}}$). Substrate water content was slightly more
-accurately predicted ($P^2$ of $0.25$), with an $RMSE$ of
-$122.5\,\mathrm{g~L^{-1}}$ for a standard deviation of
-$142.4\,\mathrm{g~L^{-1}}$. Model accuracy for mite species distribution was
-mainly influenced by the observed species counts, with $P^2$ values from a
-minimum of $0.073$ to a maximum of $0.878$. This result was not unexpected as
-the rare species were absent from most cores and only found at low frequencies
-in a few other cores, thereby making the determination of their preferred
-conditions more uncertain. On the other hand, the more prevalent species were
-observed in most of the cores with low to higher frequencies, a situation that
-makes it easier to determine the preferred conditions sought after by the
-species, provided that relevant descriptors are available.
+we have been able to predict the distribution of $35$ mites with various degrees
+of success. For instance, substrate density was predicted with a modest accuracy
+($P^2$ of $0.088$), with an $RMSE$ of $11.3\,\mathrm{g~L^{-1}}$, which was only
+slightly above the variable's standard deviation ($11.9\,\mathrm{g~L^{-1}}$).
+Substrate water content was slightly more accurately predicted ($P^2=0.25$),
+with an $RMSE$ of $122.5\,\mathrm{g~L^{-1}}$ for a standard deviation of
+$142.4\,\mathrm{g~L^{-1}}$. Model accuracy for mite distribution was mainly
+influenced by the observed counts, with $P^2$ values from a minimum of $0.073$
+to a maximum of $0.878$. This result was not unexpected as the rare mites were
+absent from most cores and only found at low frequencies in a few other cores,
+thereby making the determination of their preferred conditions more uncertain.
+On the other hand, the more prevalent mites were observed in most of the cores
+with low to higher frequencies, a situation that makes it easier to determine
+the preferred conditions sought after by the mites, provided that relevant
+descriptors are available.
 
 The computation of the pMEM relies on square matrices for storing distances and
 the weights and on eigenvalue decomposition, which is a computationally
@@ -830,8 +856,8 @@ applicable to large data sets (in the tens or hundreds of thousand of data
 points). Given that $k$ would be much smaller than $n$, the number of SEF would
 be equal to $k$ (or, perhaps, slightly smaller). This property might also help
 in simplifying model building to some extent. That proposal opens other matters
-that we did not have to ponder with while studying pMEM. For instance, the
-approach for choosing the number of kernels and their locations would have to be
+that we did not have to ponder while studying pMEM. For instance, the approach
+for choosing the number of kernels and their locations would have to be
 considered (e.g., using medoids *vs* centroids). Also, the linear algebra
 linking the Moran's I index to the SEF thus defined would need to be
 demonstrated, since that link is helpful in interpreting the spatial scale
@@ -849,15 +875,14 @@ introduced would improve MEM performance in correcting spatial confounding will
 remain an unanswered questions until a thorough simulation study addressing that
 matter is carried out. In the meantime, we consider it safer to assume that
 actual knowledge about spatial confounding still holds, and thus would direct
-the reader to the competent literature on that particular subject matter
+the reader to the literature on that particular subject matter
 [@Thaden_Structural_2018; @Dupont_Spatial_2022; @Marques_Mitigating_2022;
 @Makinen_Spatial_2022].
 
 We are hoping that the findings highlighted in the present study will entice
-scientists to use pMEM to model spatial variation and for making predictions.
-Also, we look forward for numerical ecologists to further the development of
-pMEM from its actual enactment, and for software developers to expand the
-implementation of the approaches to other computer languages and software.
+scientists to use pMEM to model spatial variation and for making predictions,
+and software developers to expand the implementation of the approaches to other
+computer languages and software.
 
 # Conflict of interest statement
 
@@ -867,8 +892,7 @@ We declare no conflict of interest.
 
 An R package called pMEM and all the data used for this study (computer
 simulations, example calculations, Appendices) are available through the
-following [anonymous.4open.science
-link](https://anonymous.4open.science/r/pMEM-archive-60A1).
+following link: <https://github.com/guenardg/pMEM-archive>.
 
 \pagebreak
 
@@ -879,17 +903,11 @@ link](https://anonymous.4open.science/r/pMEM-archive-60A1).
 
 # Figures and tables
 
-![](Image/Common%20weighting%20functions.png)
-
 ```{r, echo=FALSE, results='asis'}
 figCounter$getCaption("dwf_shape")
 ```
 
 --------------------------------------------------------------------------------
-
-\pagebreak
-
-![](Image/Oribatid_map.png)
 
 ```{r, echo=FALSE, results='asis'}
 figCounter$getCaption("Oribatid_map")
@@ -897,19 +915,11 @@ figCounter$getCaption("Oribatid_map")
 
 --------------------------------------------------------------------------------
 
-\pagebreak
-
-![](Image/SubsWatr.png)
-
 ```{r, echo=FALSE, results='asis'}
 figCounter$getCaption("res_SubsWatr")
 ```
 
 --------------------------------------------------------------------------------
-
-\pagebreak
-
-![](Image/Oribatid_PCA_power.png)
 
 ```{r, echo=FALSE, results='asis'}
 figCounter$getCaption("res_Oribatids")
@@ -991,8 +1001,6 @@ kable(
     for a through presentation of these three DWF.
 
 \pagebreak
-
-[Move this table to the appendix on smoothness, including the table header]
 
 ```{r, echo = FALSE, results='asis'}
 tableCounter$getCaption("aov_tab1")

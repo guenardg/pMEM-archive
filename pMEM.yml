@@ -40,12 +40,12 @@ captions:
       Maps of substrate types, shrub density, and topography outlined from
       Borcard and Legendre (1994, their Figure 1), together with a principal
       component analysis (PCA) biplot showing the sampling sites (markers) and
-      Oribatid mite species (arrows). The maps also feature the sampling points
-      (black dots), open waters (blue area), and flooded areas (circumscribed by
-      dotted curves). The labels at the tip of the PCA biplot arrows are the
-      names of the eight species with the largest axis loadings in their
-      vicinity. The two PCA axes represent approximatly a fourth of the total
-      species variation among the sites.
+      Oribatid mites (arrows). The maps also feature the sampling points (black
+      dots), open waters (blue area), and flooded areas (circumscribed by dotted
+      curves). The labels at the tip of the PCA biplot arrows are the names of
+      the eight mites with the largest axis loadings in their vicinity. The two
+      PCA axes represent approximatly a fourth of the total variation among the
+      sites.
   - 
     label: res_SubsWatr
     caption: >
@@ -61,8 +61,8 @@ captions:
     caption: >
       Site loadings of a two-axis PCA over the Oribatid mite study area. These
       axes represent the two main components of the Oribatid mite community
-      structure (representing approximately 25% of the among-site species
-      variability). Rainbow colors pixels on the surface of the study area are
-      the values obtained from predicted species counts, whereas the background
-      color of the markers correspond to the observed PCA axis loadings.
+      structure (representing approximately 25% of the among-site variability).
+      Rainbow colors pixels on the surface of the study area are the values
+      obtained from predicted counts, whereas the background color of the
+      markers correspond to the observed PCA axis loadings.
 ---

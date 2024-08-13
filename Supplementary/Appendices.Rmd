@@ -1,16 +1,17 @@
 ---
-title: "Making Predictions Using Spatial Eigenvector Maps -- Supplementary Material\n"
+title: "Making Predictions Using Spatial Eigenvector Maps -- Supplementary Material"
 author:
-- Author 1
-- Author 2
+- name: "Guillaume Guénard"
+  url: "https://github.com/guenardg"
+  affiliation: Département de sciences biologiques, Université de Montréal, Po Box 6128 Centre-ville Station, Montreal (Quebec), H3C 3J7 Canada
+- name: "Pierre Legendre"
+  url: "https://numericalecology.com"
+  affiliation: Département de sciences biologiques, Université de Montréal, Po Box 6128 Centre-ville Station, Montreal (Quebec), H3C 3J7 Canada
 date: "`r Sys.Date()`"
 output:
-  html_document:
+  distill::distill_article:
     toc: true
     toc_depth: 3
-  word_document:
-    toc: true
-    toc_depth: '3'
 header-includes:
 - \usepackage{setspace}
 - \doublespacing
@@ -1604,12 +1605,12 @@ figCounter2$getCaption("res_subset")
 
 ### Oribatid distribution
 
-The following seven figures show the distributions of $35$ Oribatid mite species
+The following seven figures show the distributions of $35$ Oribatid mites
 inhabiting the peat bog mat surrounding Lac Geai as predicted by models built
 using pMEM spatial eigenfunctions based on the seven distance weighting
 functions presented in this paper. The specific likelihood coefficients of
 determination ($R^2$) differ among the models and are shown in parentheses under
-the species labels.
+the labels.
 
 ![](../Image/Oribatid_predictions-linear.png)
 
