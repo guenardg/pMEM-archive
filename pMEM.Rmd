@@ -892,7 +892,8 @@ We declare no conflict of interest.
 
 An R package called pMEM and all the data used for this study (computer
 simulations, example calculations, Appendices) are available through the
-following link: <https://github.com/guenardg/pMEM-archive>.
+following link: [DOI:
+10.5281/zenodo.13311594](https://doi.org/10.5281/zenodo.13311594).
 
 \pagebreak
 
